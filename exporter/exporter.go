@@ -6,6 +6,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/config"
+	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/monitor"
 )
 
 const (
@@ -14,8 +15,8 @@ const (
 
 // solanaCollector respresents a set of solana metrics
 type metricsCollector struct {
-	config *config.Config
-	// version
+	config  *config.Config
+	version *prometheus.Desc
 	// totalValidatorsDesc       *prometheus.Desc
 	// validatorActivatedStake   *prometheus.Desc
 	// validatorLastVote         *prometheus.Desc
@@ -51,11 +52,24 @@ type metricsCollector struct {
 func NewMetricsCollector(cfg *config.Config) *metricsCollector {
 	return &metricsCollector{
 		config: cfg,
+		version: prometheus.NewDesc(
+			"skale_version",
+			"Current version of SKALE network client",
+			[]string{"version"}, nil),
 	}
 }
 
 // Desribe exports metrics to the channel
-func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {}
+func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {
+	ch <- c.version
+}
 
 func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
+	// get version
+	version, err := monitor.GetVersion(c.config)
+	if err != nil {
+		ch <- prometheus.NewInvalidMetric(c.version, err)
+	} else {
+		ch <- prometheus.MustNewConstMetric(c.version, prometheus.GaugeValue, 1, version.Result)
+	}
 }

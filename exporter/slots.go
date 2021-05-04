@@ -6,7 +6,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/config"
-	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/monitor"
 )
 
 const (
@@ -39,6 +38,6 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 	for {
 		<-ticker.C
 
-		_, _ = monitor.GetVersion(cfg)
+		// _, _ = monitor.GetVersion(cfg)
 	}
 }
