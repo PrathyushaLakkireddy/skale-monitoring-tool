@@ -162,7 +162,7 @@ type (
 	}
 
 	// Version struct which holds information of solana version
-	Version struct {
+	EthResult struct {
 		// Jsonrpc string `json:"jsonrpc"`
 		// Result struct {
 		// 	SolanaCore string `json:"solana-core"`

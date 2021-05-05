@@ -19,10 +19,16 @@ var (
 		Name: "skale_syncing",
 		Help: "Node Syncing",
 	})
+
+	blockNumber = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "skale_block_number",
+		Help: "Skale block number",
+	})
 )
 
 func init() {
 	prometheus.MustRegister(syncing)
+	prometheus.MustRegister(blockNumber)
 }
 
 func (c *metricsCollector) WatchSlots(cfg *config.Config) {
@@ -47,7 +53,10 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 		}
 		syncing.Set(sync)
 
-		// ch := chan<- prometheus.Metric
-		// c.Collect(make(chan<- prometheus.Metric))
+		num, err := monitor.GetBlockNumber(cfg)
+		if err != nil {
+			log.Printf("Error while getting block number : %v", err)
+		}
+		blockNumber.Set(num)
 	}
 }

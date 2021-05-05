@@ -10,14 +10,14 @@ import (
 )
 
 // GetVersion returns the current solana versions running on the node
-func GetVersion(cfg *config.Config) (types.Version, error) {
+func GetVersion(cfg *config.Config) (types.EthResult, error) {
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.RPCEndpoint,
 		Method:   http.MethodPost,
 		Body:     types.Payload{Jsonrpc: "2.0", Method: "web3_clientVersion", ID: 1},
 	}
 
-	var result types.Version
+	var result types.EthResult
 	resp, err := HitHTTPTarget(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
