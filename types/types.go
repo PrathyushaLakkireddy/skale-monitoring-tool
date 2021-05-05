@@ -277,4 +277,10 @@ type (
 			BlockTime int64 `json:"blockTime"`
 		} `json:"result"`
 	}
+
+	Syncing struct {
+		// ID      int    `json:"id"`
+		Jsonrpc string `json:"jsonrpc"`
+		Result  bool   `json:"result"`
+	}
 )

@@ -1,26 +1,28 @@
 package exporter
 
 import (
+	"log"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/config"
+	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/monitor"
 )
 
 const (
-	slotPacerSchedule = 500 * time.Millisecond
+	slotPacerSchedule = 5 * time.Second
 )
 
 var (
-	version = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "skale_verion",
-		Help: "Skale version",
+	syncing = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "skale_syncing",
+		Help: "Node Syncing",
 	})
 )
 
 func init() {
-	prometheus.MustRegister(version)
+	prometheus.MustRegister(syncing)
 }
 
 func (c *metricsCollector) WatchSlots(cfg *config.Config) {
@@ -38,6 +40,14 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 	for {
 		<-ticker.C
 
-		// _, _ = monitor.GetVersion(cfg)
+		log.Printf("here....")
+		sync, err := monitor.GetSyncingStatus(cfg)
+		if err != nil {
+			log.Printf("Error while getting syncing status : %v", err)
+		}
+		syncing.Set(sync)
+
+		// ch := chan<- prometheus.Metric
+		// c.Collect(make(chan<- prometheus.Metric))
 	}
 }

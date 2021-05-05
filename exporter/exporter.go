@@ -1,6 +1,8 @@
 package exporter
 
 import (
+	"log"
+	"sync"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -13,9 +15,10 @@ const (
 	httpTimeout = 5 * time.Second
 )
 
-// solanaCollector respresents a set of solana metrics
+// metricsCollector respresents a set of skale metrics
 type metricsCollector struct {
 	config  *config.Config
+	mutex   *sync.Mutex
 	version *prometheus.Desc
 	// totalValidatorsDesc       *prometheus.Desc
 	// validatorActivatedStake   *prometheus.Desc
@@ -65,11 +68,14 @@ func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
+	log.Println("cmng here...")
 	// get version
+	// c.mutex.Lock()
 	version, err := monitor.GetVersion(c.config)
 	if err != nil {
 		ch <- prometheus.NewInvalidMetric(c.version, err)
 	} else {
 		ch <- prometheus.MustNewConstMetric(c.version, prometheus.GaugeValue, 1, version.Result)
 	}
+	// c.mutex.Unlock()
 }
