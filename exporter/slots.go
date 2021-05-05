@@ -24,11 +24,17 @@ var (
 		Name: "skale_block_number",
 		Help: "Skale block number",
 	})
+
+	balance = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "skale_balance",
+		Help: "Skale account balance",
+	})
 )
 
 func init() {
 	prometheus.MustRegister(syncing)
 	prometheus.MustRegister(blockNumber)
+	prometheus.MustRegister(balance)
 }
 
 func (c *metricsCollector) WatchSlots(cfg *config.Config) {
@@ -58,5 +64,12 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 			log.Printf("Error while getting block number : %v", err)
 		}
 		blockNumber.Set(num)
+
+		bal, err := monitor.GetBalance(cfg)
+		if err != nil {
+			log.Printf("Error while getting account bal : %v", err)
+		}
+
+		balance.Set(bal)
 	}
 }
