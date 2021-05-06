@@ -71,11 +71,11 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	log.Println("cmng here...")
 	// get version
 	// c.mutex.Lock()
-	version, err := monitor.GetVersion(c.config)
+	cVersion, err := monitor.GetClientVersion(c.config)
 	if err != nil {
 		ch <- prometheus.NewInvalidMetric(c.version, err)
 	} else {
-		ch <- prometheus.MustNewConstMetric(c.version, prometheus.GaugeValue, 1, version.Result)
+		ch <- prometheus.MustNewConstMetric(c.version, prometheus.GaugeValue, 1, cVersion.Result)
 	}
 	// c.mutex.Unlock()
 }

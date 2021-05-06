@@ -9,8 +9,8 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
-// GetVersion returns the current solana versions running on the node
-func GetVersion(cfg *config.Config) (types.EthResult, error) {
+// GetClientVersion returns the current solana versions running on the node
+func GetClientVersion(cfg *config.Config) (types.EthResult, error) {
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.RPCEndpoint,
 		Method:   http.MethodPost,
