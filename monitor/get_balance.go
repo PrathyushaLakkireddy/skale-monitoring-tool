@@ -38,7 +38,7 @@ func GetBalance(cfg *config.Config) (float64, error) {
 		log.Printf("Error while converting block hex number to int: %v", err)
 	}
 
-	log.Printf("Balance : %d", b, float64(b))
+	log.Printf("Balance : %d and %f", b, float64(b))
 
 	return float64(b), nil
 }

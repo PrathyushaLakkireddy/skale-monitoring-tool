@@ -195,79 +195,10 @@ type (
 		VotePubkey       string    `json:"votePubkey"`
 	}
 
-	// GetVoteAccountsResponse struct holds information of current and deliquent vote accounts
-	GetVoteAccountsResponse struct {
-		Result struct {
-			Current    []VoteAccount `json:"current"`
-			Delinquent []VoteAccount `json:"delinquent"`
-		} `json:"result"`
-		Error rpcError `json:"error"`
-	}
-
 	// rpcError struct which holds Error message of RPC
 	rpcError struct {
 		Message string `json:"message"`
 		Code    int64  `json:"id"`
-	}
-	// Stake struct which holds information of stake account
-	Stake struct {
-		Jsonrpc string `json:"jsonrpc"`
-		Result  struct {
-			Active   int64  `json:"active"`
-			Inactive int64  `json:"inactive"`
-			State    string `json:"state"`
-		} `json:"result"`
-	}
-
-	// SlotLeader holds the  information of current slot leader
-	SlotLeader struct {
-		Jsonrpc string `json:"jsonrpc"`
-		Result  string `json:"result"`
-	}
-
-	// CurrentSlot holds the information of Current slot
-	CurrentSlot struct {
-		Jsonrpc string `json:"jsonrpc"`
-		Result  int64  `json:"result"`
-	}
-
-	// DBRes struct holds the Account balance and alertcount which stored in Database
-	DBRes struct {
-		Status string `json:"status"`
-		Data   struct {
-			ResultType string `json:"resultType"`
-			Result     []struct {
-				Metric struct {
-					Name                  string `json:"__name__"`
-					Instance              string `json:"instance"`
-					Job                   string `json:"job"`
-					SolanaAccBalance      string `json:"solana_acc_balance"`
-					AlertCount            string `json:"alert_count"`
-					SolanaValStatus       string `json:"solana_val_status"`
-					SolanaPreviousCredits string `json:"solana_previous_credits"`
-					SolanaCurrentCredits  string `json:"solana_current_credits"`
-				} `json:"metric"`
-				Value []interface{} `json:"value"`
-			} `json:"result"`
-		} `json:"data"`
-	}
-
-	// TxCount struct which holds information of Transaction count
-	TxCount struct {
-		Jsonrpc string `json:"jsonrpc"`
-		Result  int64  `json:"result"`
-	}
-
-	// ClusterNode struct which holds information about all the nodes participating in the cluster
-	ClustrNode struct {
-		// Jsonrpc string `json:"jsonrpc"`
-		Result []struct {
-			Gossip  string `json:"gossip"`
-			Pubkey  string `json:"pubkey"`
-			RPC     string `json:"rpc"`
-			Tpu     string `json:"tpu"`
-			Version string `json:"version"`
-		} `json:"result"`
 	}
 
 	// ConfirmedBlock struct which holds blocktime of confirmedBlock at current slot height
@@ -282,5 +213,36 @@ type (
 		// ID      int    `json:"id"`
 		Jsonrpc string `json:"jsonrpc"`
 		Result  bool   `json:"result"`
+	}
+
+	StatusCore struct {
+		Data []struct {
+			Image string `json:"image"`
+			Name  string `json:"name"`
+			State struct {
+				Status     string `json:"Status"`
+				Running    bool   `json:"Running"`
+				Paused     bool   `json:"Paused"`
+				Restarting bool   `json:"Restarting"`
+				OOMKilled  bool   `json:"OOMKilled"`
+				Dead       bool   `json:"Dead"`
+				Pid        int    `json:"Pid"`
+				ExitCode   int    `json:"ExitCode"`
+				Error      string `json:"Error"`
+				StartedAt  string `json:"StartedAt"`
+				FinishedAt string `json:"FinishedAt"`
+			} `json:"state,omitempty"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
+	}
+
+	// SGXStatus server info - connection status and SGX wallet version
+	SGXStatus struct {
+		Data struct {
+			Status           int    `json:"status"`
+			StatusName       string `json:"status_name"`
+			SgxWalletVersion string `json:"sgx_wallet_version"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
 	}
 )

@@ -44,14 +44,6 @@ func init() {
 }
 
 func (c *metricsCollector) WatchSlots(cfg *config.Config) {
-	var (
-	// Current mapping of relative slot numbers to leader public keys.
-	// epochSlots map[int64]string
-	// // Current epoch number corresponding to epochSlots.
-	// epochNumber int64
-	// // Last slot number we generated ticks for.
-	// watermark int64
-	)
 
 	ticker := time.NewTicker(slotPacerSchedule)
 

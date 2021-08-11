@@ -17,10 +17,10 @@ const (
 
 // metricsCollector respresents a set of skale metrics
 type metricsCollector struct {
-	config  *config.Config
-	mutex   *sync.Mutex
-	version *prometheus.Desc
-	// totalValidatorsDesc       *prometheus.Desc
+	config    *config.Config
+	mutex     *sync.Mutex
+	version   *prometheus.Desc
+	sgxStatus *prometheus.Desc
 	// validatorActivatedStake   *prometheus.Desc
 	// validatorLastVote         *prometheus.Desc
 	// validatorRootSlot         *prometheus.Desc
@@ -59,23 +59,37 @@ func NewMetricsCollector(cfg *config.Config) *metricsCollector {
 			"skale_version",
 			"Current version of SKALE network client",
 			[]string{"version"}, nil),
+		sgxStatus: prometheus.NewDesc(
+			"skale_sgx_status",
+			"Get sgx server info",
+			[]string{"status_name", "wallet_version"}, nil),
 	}
 }
 
 // Desribe exports metrics to the channel
 func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.version
+	ch <- c.sgxStatus
 }
 
 func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	log.Println("cmng here...")
 	// get version
 	// c.mutex.Lock()
-	cVersion, err := monitor.GetClientVersion(c.config)
+	cVersion, err := monitor.GetClientVersion(c.config) // TODO check
 	if err != nil {
-		ch <- prometheus.NewInvalidMetric(c.version, err)
+		log.Printf("Error while getting client version : %v", err)
 	} else {
 		ch <- prometheus.MustNewConstMetric(c.version, prometheus.GaugeValue, 1, cVersion.Result)
 	}
 	// c.mutex.Unlock()
+
+	// get sgx status
+
+	sgx, err := monitor.GetSGXStatus(c.config)
+	if err != nil {
+		log.Printf("Error while fetching sgx status : %v", err)
+	} else {
+		ch <- prometheus.MustNewConstMetric(c.sgxStatus, prometheus.GaugeValue, float64(sgx.Data.Status), sgx.Data.StatusName, sgx.Data.SgxWalletVersion)
+	}
 }

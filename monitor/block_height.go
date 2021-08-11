@@ -38,7 +38,7 @@ func GetBlockNumber(cfg *config.Config) (float64, error) {
 		log.Printf("Error while converting block hex number to int: %v", err)
 	}
 
-	log.Printf("Block number : %d", num, float64(num))
+	log.Printf("Block number : %d and %f", num, float64(num))
 
 	return float64(num), nil
 }
