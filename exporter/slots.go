@@ -51,17 +51,20 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 		<-ticker.C
 
 		log.Printf("here....")
-		sync, err := monitor.GetSyncingStatus(cfg)
-		if err != nil {
-			log.Printf("Error while getting syncing status : %v", err)
-		}
-		syncing.Set(sync)
 
-		num, err := monitor.GetBlockNumber(cfg)
+		status, err := monitor.GetEndpointStatus(cfg)
 		if err != nil {
-			log.Printf("Error while getting block number : %v", err)
+			log.Printf("Error while getting endpoint status : %v", err)
+		} else {
+			bn := float64(status.Data.BlockNumber)
+			blockNumber.Set(bn)
+
+			i := 1
+			if status.Data.Syncing {
+				i = 0
+			}
+			syncing.Set(float64(i))
 		}
-		blockNumber.Set(num)
 
 		bal, err := monitor.GetBalance(cfg)
 		if err != nil {

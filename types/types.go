@@ -245,4 +245,31 @@ type (
 		} `json:"data"`
 		Error interface{} `json:"error"`
 	}
+
+	SchainsStatus struct {
+		Data []struct {
+			Name         string `json:"name"`
+			Healthchecks struct {
+				DataDir       bool `json:"data_dir"`
+				Dkg           bool `json:"dkg"`
+				Config        bool `json:"config"`
+				Volume        bool `json:"volume"`
+				FirewallRules bool `json:"firewall_rules"`
+				Container     bool `json:"container"`
+				ExitCodeOk    bool `json:"exit_code_ok"`
+				ImaContainer  bool `json:"ima_container"`
+				RPC           bool `json:"rpc"`
+				Blocks        bool `json:"blocks"`
+			} `json:"healthchecks"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
+	}
+
+	EndpointStatus struct {
+		Data struct {
+			BlockNumber int  `json:"block_number"`
+			Syncing     bool `json:"syncing"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
+	}
 )
