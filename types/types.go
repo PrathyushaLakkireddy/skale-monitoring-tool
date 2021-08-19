@@ -272,4 +272,10 @@ type (
 		} `json:"data"`
 		Error interface{} `json:"error"`
 	}
+
+	PublicIPResult struct { //TODO :: have to check
+		Data struct {
+			IP string `json:"ip"`
+		} `json:"data"`
+	}
 )
