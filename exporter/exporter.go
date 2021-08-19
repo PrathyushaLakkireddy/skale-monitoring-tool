@@ -2,6 +2,7 @@ package exporter
 
 import (
 	"log"
+	"strconv"
 	"sync"
 	"time"
 
@@ -17,12 +18,14 @@ const (
 
 // metricsCollector respresents a set of skale metrics
 type metricsCollector struct {
-	config     *config.Config
-	mutex      *sync.Mutex
-	version    *prometheus.Desc
-	sgxStatus  *prometheus.Desc
-	publicIP   *prometheus.Desc
-	coreStatus *prometheus.Desc
+	config      *config.Config
+	mutex       *sync.Mutex
+	version     *prometheus.Desc
+	sgxStatus   *prometheus.Desc
+	publicIP    *prometheus.Desc
+	coreStatus  *prometheus.Desc
+	noOfschains *prometheus.Desc
+	sChains     *prometheus.Desc
 }
 
 func NewMetricsCollector(cfg *config.Config) *metricsCollector {
@@ -44,6 +47,14 @@ func NewMetricsCollector(cfg *config.Config) *metricsCollector {
 			"skale_core_status",
 			"status about docker images",
 			[]string{"image", "name", "status"}, nil),
+		noOfschains: prometheus.NewDesc(
+			"no_of_schains",
+			"No of skale schains",
+			[]string{"schains_count"}, nil),
+		sChains: prometheus.NewDesc(
+			"skale_schains",
+			"info of schains",
+			[]string{"name", "dkg_status"}, nil),
 	}
 }
 
@@ -53,6 +64,8 @@ func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.sgxStatus
 	ch <- c.publicIP
 	ch <- c.coreStatus
+	ch <- c.noOfschains
+	ch <- c.sChains
 }
 
 func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
@@ -67,7 +80,7 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	}
 	// c.mutex.Unlock()
 
-	// get sgx status
+	// get sgx status info
 	sgx, err := monitor.GetSGXStatus(c.config)
 	if err != nil {
 		log.Printf("Error while fetching sgx status : %v", err)
@@ -86,10 +99,23 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	// get core status to check docker images running status
 	cStatus, err := monitor.GetCoreStatus(c.config)
 	if err != nil {
-		log.Printf("Error while egtting core status : %v", err)
+		log.Printf("Error while getting core status : %v", err)
 	} else {
 		for _, v := range cStatus.Data {
 			ch <- prometheus.MustNewConstMetric(c.coreStatus, prometheus.GaugeValue, -1, v.Image, v.Name, v.State.Status)
+		}
+	}
+
+	// get schains info
+	schains, err := monitor.GetSchainStatus(c.config)
+	if err != nil {
+		log.Printf("Error while getting schain status : %v", err)
+	} else {
+		n := len(schains.Data)
+		ch <- prometheus.MustNewConstMetric(c.noOfschains, prometheus.GaugeValue, float64(n), strconv.Itoa(n))
+
+		for _, s := range schains.Data {
+			ch <- prometheus.MustNewConstMetric(c.sChains, prometheus.GaugeValue, -1, s.Name, strconv.FormatBool(s.Healthchecks.Dkg))
 		}
 	}
 }
