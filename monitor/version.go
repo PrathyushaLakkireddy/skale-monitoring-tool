@@ -12,7 +12,7 @@ import (
 // GetClientVersion returns the current solana versions running on the node
 func GetClientVersion(cfg *config.Config) (types.EthResult, error) {
 	ops := types.HTTPOptions{
-		Endpoint: cfg.Endpoints.RPCEndpoint,
+		Endpoint: cfg.Endpoints.SkaleNodeIP,
 		Method:   http.MethodPost,
 		Body:     types.Payload{Jsonrpc: "2.0", Method: "web3_clientVersion", ID: 1},
 	}

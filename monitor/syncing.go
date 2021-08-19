@@ -12,7 +12,7 @@ import (
 // GetSyncingStatus returns the syncing status of node
 func GetSyncingStatus(cfg *config.Config) (float64, error) {
 	ops := types.HTTPOptions{
-		Endpoint: cfg.Endpoints.RPCEndpoint,
+		Endpoint: cfg.Endpoints.SkaleNodeIP,
 		Method:   http.MethodPost,
 		Body:     types.Payload{Jsonrpc: "2.0", Method: "eth_syncing", ID: 1},
 	}
@@ -33,7 +33,7 @@ func GetSyncingStatus(cfg *config.Config) (float64, error) {
 	}
 
 	if result.Result {
-		i = 0 
+		i = 0
 	}
 
 	log.Printf("Syncing status : %v and value : %f", result.Result, i)

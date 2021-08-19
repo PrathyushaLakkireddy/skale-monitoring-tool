@@ -12,7 +12,7 @@ import (
 // GetCoreSttaus returns the core status of skale network
 func GetCoreStatus(cfg *config.Config) (types.StatusCore, error) {
 	ops := types.HTTPOptions{
-		Endpoint: cfg.Endpoints.RPCEndpoint + "/status/core",
+		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/core",
 		Method:   http.MethodPost,
 	}
 

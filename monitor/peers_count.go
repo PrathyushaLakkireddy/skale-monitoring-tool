@@ -13,7 +13,7 @@ import (
 // GetPeersCount returns peers count
 func GetPeersCount(cfg *config.Config) (float64, error) {
 	ops := types.HTTPOptions{
-		Endpoint: cfg.Endpoints.RPCEndpoint,
+		Endpoint: cfg.Endpoints.SkaleNodeIP,
 		Method:   http.MethodPost,
 		Body:     types.Payload{Jsonrpc: "2.0", Method: "net_peerCount", ID: 1},
 	}

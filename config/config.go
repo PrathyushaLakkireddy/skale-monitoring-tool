@@ -44,7 +44,7 @@ type (
 	// Endpoints defines multiple API base-urls to fetch the data
 	Endpoints struct {
 		// RPCEndPoint is used to gather information about validator status,active stake, account balance, commission rate and etc.
-		RPCEndpoint string `mapstructure:"rpc_endpoint"`
+		SkaleNodeIP string `mapstructure:"skale_node_ip"`
 		// NetworkRPC is used to gather information about validator
 		NetworkRPC string `mapstructure:"network_rpc"`
 	}

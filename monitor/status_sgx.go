@@ -12,7 +12,7 @@ import (
 // GetCoreSttaus returns the core status of skale network
 func GetSGXStatus(cfg *config.Config) (types.SGXStatus, error) {
 	ops := types.HTTPOptions{
-		Endpoint: cfg.Endpoints.RPCEndpoint + "/status/sgx",
+		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/sgx",
 		Method:   http.MethodPost,
 	}
 

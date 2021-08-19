@@ -12,7 +12,7 @@ import (
 // GetEndpointStatus returns the status of the endpoint
 func GetEndpointStatus(cfg *config.Config) (types.EndpointStatus, error) {
 	ops := types.HTTPOptions{
-		Endpoint: cfg.Endpoints.RPCEndpoint + "/status/endpoint",
+		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/endpoint",
 		Method:   http.MethodPost,
 	}
 
