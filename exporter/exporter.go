@@ -17,11 +17,12 @@ const (
 
 // metricsCollector respresents a set of skale metrics
 type metricsCollector struct {
-	config    *config.Config
-	mutex     *sync.Mutex
-	version   *prometheus.Desc
-	sgxStatus *prometheus.Desc
-	publicIP  *prometheus.Desc
+	config     *config.Config
+	mutex      *sync.Mutex
+	version    *prometheus.Desc
+	sgxStatus  *prometheus.Desc
+	publicIP   *prometheus.Desc
+	coreStatus *prometheus.Desc
 }
 
 func NewMetricsCollector(cfg *config.Config) *metricsCollector {
@@ -39,6 +40,10 @@ func NewMetricsCollector(cfg *config.Config) *metricsCollector {
 			"skale_public_ip",
 			"Publi IP of skale node, to which the packets were sending",
 			[]string{"public_ip"}, nil),
+		coreStatus: prometheus.NewDesc(
+			"skale_core_status",
+			"status about docker images",
+			[]string{"image", "name", "status"}, nil),
 	}
 }
 
@@ -47,6 +52,7 @@ func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.version
 	ch <- c.sgxStatus
 	ch <- c.publicIP
+	ch <- c.coreStatus
 }
 
 func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
@@ -75,5 +81,15 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 		log.Printf("Error while getting public ip : %v", err)
 	} else {
 		ch <- prometheus.MustNewConstMetric(c.publicIP, prometheus.GaugeValue, 0, pIP.Data.IP)
+	}
+
+	// get core status to check docker images running status
+	cStatus, err := monitor.GetCoreStatus(c.config)
+	if err != nil {
+		log.Printf("Error while egtting core status : %v", err)
+	} else {
+		for _, v := range cStatus.Data {
+			ch <- prometheus.MustNewConstMetric(c.coreStatus, prometheus.GaugeValue, -1, v.Image, v.Name, v.State.Status)
+		}
 	}
 }
