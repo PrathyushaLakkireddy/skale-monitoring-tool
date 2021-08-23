@@ -11,6 +11,7 @@ import (
 
 // GetClientVersion returns the current solana versions running on the node
 func GetClientVersion(cfg *config.Config) (types.EthResult, error) {
+	log.Println("Getting Client Version...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP,
 		Method:   http.MethodPost,

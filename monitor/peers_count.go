@@ -12,6 +12,7 @@ import (
 
 // GetPeersCount returns peers count
 func GetPeersCount(cfg *config.Config) (float64, error) {
+	log.Println("Getting Peers Count...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP,
 		Method:   http.MethodPost,

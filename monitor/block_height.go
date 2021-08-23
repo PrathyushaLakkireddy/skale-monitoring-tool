@@ -12,6 +12,7 @@ import (
 
 // GetBlockNumber returns the current number of skale network block
 func GetBlockNumber(cfg *config.Config) (float64, error) {
+	log.Println("Getting Block Number...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP,
 		Method:   http.MethodPost,

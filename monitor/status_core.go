@@ -9,8 +9,9 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
-// GetCoreSttaus returns the core status of skale network
+// GetCoreStatus returns the core status of skale network
 func GetCoreStatus(cfg *config.Config) (types.StatusCore, error) {
+	log.Println("Getting Core Status...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/core",
 		Method:   http.MethodPost,

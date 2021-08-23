@@ -11,6 +11,7 @@ import (
 
 // GetSyncingStatus returns the syncing status of node
 func GetSyncingStatus(cfg *config.Config) (float64, error) {
+	log.Println("Getting Syncing status...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP,
 		Method:   http.MethodPost,
