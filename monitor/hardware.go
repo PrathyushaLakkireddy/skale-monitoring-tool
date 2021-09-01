@@ -10,8 +10,8 @@ import (
 )
 
 func GetHardwareInfo(cfg *config.Config) (types.Hardware, error) {
-
 	log.Println("Getting Hardware Requirements...")
+
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/hardware",
 		Method:   http.MethodPost,
