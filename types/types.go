@@ -69,11 +69,13 @@ type (
 		Result  string `json:"result"`
 	}
 
+	// Syncing status of the node
 	Syncing struct {
 		Jsonrpc string `json:"jsonrpc"`
 		Result  bool   `json:"result"`
 	}
 
+	// StatusCore is a struct which holds inoformation of image and status of it
 	StatusCore struct {
 		Data []struct {
 			Image string `json:"image"`
@@ -95,7 +97,7 @@ type (
 		Error interface{} `json:"error"`
 	}
 
-	// SGXStatus server info - connection status and SGX wallet version
+	// SGXStatus which holds server info, connection status and SGX wallet version
 	SGXStatus struct {
 		Data struct {
 			Status           int    `json:"status"`
@@ -105,6 +107,7 @@ type (
 		Error interface{} `json:"error"`
 	}
 
+	// SchainsStatus which holds info of schains status
 	SchainsStatus struct {
 		Data []struct {
 			Name         string `json:"name"`
@@ -124,6 +127,7 @@ type (
 		Error interface{} `json:"error"`
 	}
 
+	// Hardware is a struct which holds info of required hardware details for skale node
 	Hardware struct {
 		Data struct {
 			CPUTotalCores       int    `json:"cpu_total_cores"`
@@ -137,6 +141,7 @@ type (
 		Error interface{} `json:"error"`
 	}
 
+	// EndpointStatus holds the information about node endpoint
 	EndpointStatus struct {
 		Data struct {
 			BlockNumber int  `json:"block_number"`
@@ -145,12 +150,14 @@ type (
 		Error interface{} `json:"error"`
 	}
 
+	// PublicIPResult is a struct which holds info of public IP
 	PublicIPResult struct { //TODO :: have to check
 		Data struct {
 			IP string `json:"ip"`
 		} `json:"data"`
 	}
 
+	// SslStatus is a struct which holds info if ssl status
 	SslStatus struct {
 		Data struct {
 			IssuedTo       string `json:"issued_to"`
@@ -159,6 +166,7 @@ type (
 		Error interface{} `json:"error"`
 	}
 
+	// IMAstatus is a struct which holds info of IMA status
 	IMAstatus struct {
 		Data []struct {
 			SkaleChainName struct {
