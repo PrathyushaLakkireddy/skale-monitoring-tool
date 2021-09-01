@@ -11,6 +11,7 @@ import (
 
 // GetPublicIP returns the node public IP
 func GetPublicIP(cfg *config.Config) (types.PublicIPResult, error) {
+	log.Println("Getting Public IP ...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/public-ip",
 		Method:   http.MethodPost,

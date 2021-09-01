@@ -265,6 +265,19 @@ type (
 		Error interface{} `json:"error"`
 	}
 
+	Hardware struct {
+		Data struct {
+			CPUTotalCores       int    `json:"cpu_total_cores"`
+			CPUPhysicalCores    int    `json:"cpu_physical_cores"`
+			Memory              int64  `json:"memory"`
+			Swap                int64  `json:"swap"`
+			SystemRelease       string `json:"system_release"`
+			UnameVersion        string `json:"uname_version"`
+			AttachedStorageSize int64  `json:"attached_storage_size"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
+	}
+
 	EndpointStatus struct {
 		Data struct {
 			BlockNumber int  `json:"block_number"`
@@ -277,5 +290,23 @@ type (
 		Data struct {
 			IP string `json:"ip"`
 		} `json:"data"`
+	}
+
+	SslStatus struct {
+		Data struct {
+			IssuedTo       string `json:"issued_to"`
+			ExpirationDate string `json:"expiration_date"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
+	}
+
+	IMAstatus struct {
+		Data []struct {
+			SkaleChainName struct {
+				Error         string        `json:"error"`
+				LastImaErrors []interface{} `json:"last_ima_errors"`
+			} `json:"skale-chain-name"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
 	}
 )

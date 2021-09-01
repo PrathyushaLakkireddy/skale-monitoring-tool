@@ -9,15 +9,15 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
-// GetCoreStatus returns the core status of skale network
-func GetCoreStatus(cfg *config.Config) (types.StatusCore, error) {
-	log.Println("Getting Core Status...")
+func GetIMAstatus(cfg *config.Config) (types.IMAstatus, error) {
+
+	log.Println("Getting the status of the IMA container...")
 	ops := types.HTTPOptions{
-		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/core",
+		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/ima",
 		Method:   http.MethodPost,
 	}
 
-	var result types.StatusCore
+	var result types.IMAstatus
 	resp, err := HitHTTPTarget(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
@@ -29,6 +29,6 @@ func GetCoreStatus(cfg *config.Config) (types.StatusCore, error) {
 		log.Printf("Error: %v", err)
 		return result, err
 	}
-
 	return result, nil
+
 }

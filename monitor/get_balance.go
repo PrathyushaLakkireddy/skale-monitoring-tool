@@ -12,6 +12,7 @@ import (
 
 // GetBalance returns the balance of
 func GetBalance(cfg *config.Config) (float64, error) {
+	log.Println("Getting Balance...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP,
 		Method:   http.MethodPost,

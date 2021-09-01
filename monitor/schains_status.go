@@ -11,6 +11,7 @@ import (
 
 // GetSchainStatus returns the status of the schains
 func GetSchainStatus(cfg *config.Config) (types.SchainsStatus, error) {
+	log.Println("Getting Schain Status...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/schains",
 		Method:   http.MethodPost,
