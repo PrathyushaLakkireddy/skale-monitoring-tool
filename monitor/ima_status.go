@@ -9,9 +9,10 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
+// GetIMAstatus which returns the IMA status
 func GetIMAstatus(cfg *config.Config) (types.IMAstatus, error) {
-
 	log.Println("Getting the status of the IMA container...")
+
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/ima",
 		Method:   http.MethodPost,
@@ -29,6 +30,6 @@ func GetIMAstatus(cfg *config.Config) (types.IMAstatus, error) {
 		log.Printf("Error: %v", err)
 		return result, err
 	}
-	return result, nil
 
+	return result, nil
 }

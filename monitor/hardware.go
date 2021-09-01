@@ -9,6 +9,7 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
+// GetHardwareInfo which returns the hardware info of node
 func GetHardwareInfo(cfg *config.Config) (types.Hardware, error) {
 	log.Println("Getting Hardware Requirements...")
 
