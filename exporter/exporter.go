@@ -1,6 +1,7 @@
 package exporter
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"sync"
@@ -26,6 +27,7 @@ type metricsCollector struct {
 	coreStatus  *prometheus.Desc
 	noOfschains *prometheus.Desc
 	sChains     *prometheus.Desc
+	hardware    *prometheus.Desc
 }
 
 func NewMetricsCollector(cfg *config.Config) *metricsCollector {
@@ -55,6 +57,11 @@ func NewMetricsCollector(cfg *config.Config) *metricsCollector {
 			"skale_schains",
 			"info of schains",
 			[]string{"name", "dkg_status"}, nil),
+		hardware: prometheus.NewDesc(
+			"hardware_info",
+			"hardware information of skale node",
+			[]string{"cpu_total_cores", "cpu_physical_cores", "memory", "swap",
+				"system_release", "uname_version", "attached_storage_size"}, nil),
 	}
 }
 
@@ -66,10 +73,11 @@ func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.coreStatus
 	ch <- c.noOfschains
 	ch <- c.sChains
+	ch <- c.hardware
 }
 
 func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
-	log.Println("cmng here...")
+	log.Println("Collecting exporter metrics...")
 	// get version
 	// c.mutex.Lock()
 	cVersion, err := monitor.GetClientVersion(c.config) // TODO check
@@ -117,5 +125,14 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 		for _, s := range schains.Data {
 			ch <- prometheus.MustNewConstMetric(c.sChains, prometheus.GaugeValue, -1, s.Name, strconv.FormatBool(s.Healthchecks.Dkg))
 		}
+	}
+
+	// get hardware info
+	h, err := monitor.GetHardwareInfo(c.config)
+	if err != nil {
+		log.Printf("Error while getting hardware information : %v", err)
+	} else {
+		ch <- prometheus.MustNewConstMetric(c.hardware, prometheus.GaugeValue, -1, fmt.Sprintf("%d", h.Data.CPUTotalCores), fmt.Sprintf("%d", h.Data.CPUPhysicalCores), fmt.Sprintf("%d", h.Data.Memory),
+			fmt.Sprintf("%d", h.Data.Swap), h.Data.SystemRelease, h.Data.UnameVersion, fmt.Sprintf("%d", h.Data.AttachedStorageSize))
 	}
 }
