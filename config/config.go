@@ -91,6 +91,10 @@ type (
 		// EpochDiffAlerts which takes an option to enable/disable epoch difference alerts, on enable sends alerts if
 		// difference reaches or exceedes epoch difference threshold
 		EpochDiffAlerts string `mapstructure:"epoch_diff_alrets"`
+
+		BlockSyncAlerts string `mapstructure:"block_sync_alerts"`
+
+		NumPeersAlerts string `mapstructure:"num_peers_alerts"`
 	}
 
 	//  AlertingThreshold defines threshold condition for different alert-cases.
@@ -104,6 +108,7 @@ type (
 		// EpochDiffThreahold option is to send alerts when the difference b/w network and validator's
 		// epoch reaches or exceedes to epoch difference threshold
 		EpochDiffThreshold int64 `mapstructure:"epoch_diff_threshold"`
+		NumPeersThreshold  int64 `mapstructure:"num_peers_threshold"`
 	}
 
 	// Config defines all the configurations required for the app

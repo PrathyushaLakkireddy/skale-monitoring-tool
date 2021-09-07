@@ -1,11 +1,14 @@
 package exporter
 
 import (
+	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 
+	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/alerter"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/config"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/monitor"
 )
@@ -34,6 +37,11 @@ var (
 		Name: "skale_peers_count",
 		Help: "Skale peers count",
 	})
+
+	alertCount = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "skale_alert_count",
+		Help: "Skale Alert count",
+	})
 )
 
 func init() {
@@ -41,6 +49,7 @@ func init() {
 	prometheus.MustRegister(blockNumber)
 	prometheus.MustRegister(balance)
 	prometheus.MustRegister(peers)
+	prometheus.MustRegister(alertCount)
 }
 
 func (c *metricsCollector) WatchSlots(cfg *config.Config) {
@@ -62,6 +71,16 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 			i := 1
 			if status.Data.Syncing {
 				i = 0
+				if strings.EqualFold(cfg.AlerterPreferences.BlockSyncAlerts, "yes") {
+					telegramErr := alerter.SendTelegramAlert(fmt.Sprintf("Current block is in Syncing Process"), cfg)
+					if telegramErr != nil {
+						log.Printf("Error while sending block syncing status alert to telegram : %v", telegramErr)
+					}
+					emailErr := alerter.SendEmailAlert(fmt.Sprintf("Current block is in Syncing Process"), cfg)
+					if emailErr != nil {
+						log.Printf("Error while block syncing status alert to Email : %v", emailErr)
+					}
+				}
 			}
 			syncing.Set(float64(i))
 		}
