@@ -14,7 +14,7 @@ func GetEndpointStatus(cfg *config.Config) (types.EndpointStatus, error) {
 	log.Println("Getting Endpoint Status...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/endpoint",
-		Method:   http.MethodPost,
+		Method:   http.MethodGet,
 	}
 
 	var result types.EndpointStatus

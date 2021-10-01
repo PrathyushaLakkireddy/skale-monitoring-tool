@@ -113,7 +113,7 @@ type (
 
 	// Config defines all the configurations required for the app
 	Config struct {
-		Endpoints           Endpoints           `mapstructure:"rpc_and_lcd_endpoints"`
+		Endpoints           Endpoints           `mapstructure:"skale_endpoint"`
 		ValDetails          ValDetails          `mapstructure:"validator_details"`
 		EnableAlerts        EnableAlerts        `mapstructure:"enable_alerts"`
 		RegularStatusAlerts RegularStatusAlerts `mapstructure:"regular_status_alerts"`

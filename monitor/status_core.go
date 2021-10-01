@@ -14,7 +14,7 @@ func GetCoreStatus(cfg *config.Config) (types.StatusCore, error) {
 	log.Println("Getting Core Status...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/core",
-		Method:   http.MethodPost,
+		Method:   http.MethodGet,
 	}
 
 	var result types.StatusCore

@@ -28,6 +28,7 @@ type metricsCollector struct {
 	noOfschains *prometheus.Desc
 	sChains     *prometheus.Desc
 	hardware    *prometheus.Desc
+	btrfs       *prometheus.Desc
 }
 
 func NewMetricsCollector(cfg *config.Config) *metricsCollector {
@@ -62,6 +63,10 @@ func NewMetricsCollector(cfg *config.Config) *metricsCollector {
 			"hardware information of skale node",
 			[]string{"cpu_total_cores", "cpu_physical_cores", "memory", "swap",
 				"system_release", "uname_version", "attached_storage_size"}, nil),
+		btrfs: prometheus.NewDesc(
+			"btrfs_status",
+			"BTRFS kernal module status",
+			[]string{"btrfs_status"}, nil),
 	}
 }
 
@@ -74,18 +79,13 @@ func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.noOfschains
 	ch <- c.sChains
 	ch <- c.hardware
+	ch <- c.btrfs
 }
 
 func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	log.Println("Collecting exporter metrics...")
 	// get version
 	// c.mutex.Lock()
-	cVersion, err := monitor.GetClientVersion(c.config) // TODO check
-	if err != nil {
-		log.Printf("Error while getting client version : %v", err)
-	} else {
-		ch <- prometheus.MustNewConstMetric(c.version, prometheus.GaugeValue, 1, cVersion.Result)
-	}
 	// c.mutex.Unlock()
 
 	// get sgx status info
@@ -101,7 +101,7 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	if err != nil {
 		log.Printf("Error while getting public ip : %v", err)
 	} else {
-		ch <- prometheus.MustNewConstMetric(c.publicIP, prometheus.GaugeValue, 0, pIP.Data.IP)
+		ch <- prometheus.MustNewConstMetric(c.publicIP, prometheus.GaugeValue, 0, pIP.Data.PublicIP)
 	}
 
 	// get core status to check docker images running status
@@ -134,6 +134,21 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	} else {
 		ch <- prometheus.MustNewConstMetric(c.hardware, prometheus.GaugeValue, -1, fmt.Sprintf("%d", h.Data.CPUTotalCores), fmt.Sprintf("%d", h.Data.CPUPhysicalCores), fmt.Sprintf("%d", h.Data.Memory),
 			fmt.Sprintf("%d", h.Data.Swap), h.Data.SystemRelease, h.Data.UnameVersion, fmt.Sprintf("%d", h.Data.AttachedStorageSize))
+	}
+
+	// get btrfs kernal module info
+	b, err := monitor.GetBTRFSstatus(c.config)
+	if err != nil {
+		log.Printf("Error while getting btrfs status : %v", err)
+	} else {
+		if b.Data.KernelModule == true {
+			ks := "enabled"
+			ch <- prometheus.MustNewConstMetric(c.btrfs, prometheus.GaugeValue, -1, ks)
+		} else {
+			ks := "disabled"
+			ch <- prometheus.MustNewConstMetric(c.btrfs, prometheus.GaugeValue, -1, ks)
+		}
+
 	}
 
 }

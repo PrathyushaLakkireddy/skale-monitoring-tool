@@ -15,7 +15,7 @@ func GetHardwareInfo(cfg *config.Config) (types.Hardware, error) {
 
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/hardware",
-		Method:   http.MethodPost,
+		Method:   http.MethodGet,
 	}
 
 	var result types.Hardware

@@ -28,16 +28,6 @@ var (
 		Help: "Skale block number",
 	})
 
-	balance = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "skale_balance",
-		Help: "Skale account balance",
-	})
-
-	peers = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "skale_peers_count",
-		Help: "Skale peers count",
-	})
-
 	alertCount = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "skale_alert_count",
 		Help: "Skale Alert count",
@@ -47,8 +37,6 @@ var (
 func init() {
 	prometheus.MustRegister(syncing)
 	prometheus.MustRegister(blockNumber)
-	prometheus.MustRegister(balance)
-	prometheus.MustRegister(peers)
 	prometheus.MustRegister(alertCount)
 }
 
@@ -84,19 +72,5 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 			}
 			syncing.Set(float64(i))
 		}
-
-		bal, err := monitor.GetBalance(cfg)
-		if err != nil {
-			log.Printf("Error while getting account bal : %v", err)
-		}
-
-		balance.Set(bal)
-
-		p, err := monitor.GetPeersCount(cfg)
-		if err != nil {
-			log.Printf("Error while getting peers count : %v", err)
-		}
-
-		peers.Set(p)
 	}
 }

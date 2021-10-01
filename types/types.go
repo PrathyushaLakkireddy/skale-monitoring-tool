@@ -153,7 +153,7 @@ type (
 	// PublicIPResult is a struct which holds info of public IP
 	PublicIPResult struct { //TODO :: have to check
 		Data struct {
-			IP string `json:"ip"`
+			PublicIP string `json:"public_ip"`
 		} `json:"data"`
 	}
 
@@ -173,6 +173,13 @@ type (
 				Error         string        `json:"error"`
 				LastImaErrors []interface{} `json:"last_ima_errors"`
 			} `json:"skale-chain-name"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
+	}
+
+	BTRFSstatus struct {
+		Data struct {
+			KernelModule bool `json:"kernel_module"`
 		} `json:"data"`
 		Error interface{} `json:"error"`
 	}
