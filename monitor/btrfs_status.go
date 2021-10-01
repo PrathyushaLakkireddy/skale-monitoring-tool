@@ -11,7 +11,7 @@ import (
 
 // GetPublicIP returns the node public IP
 func GetBTRFSstatus(cfg *config.Config) (types.BTRFSstatus, error) {
-	log.Println("Getting Public IP ...")
+	log.Println("Getting BTRFS status ...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/btrfs",
 		Method:   http.MethodGet,
