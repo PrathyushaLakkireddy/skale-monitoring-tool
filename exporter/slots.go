@@ -40,6 +40,8 @@ func init() {
 	prometheus.MustRegister(alertCount)
 }
 
+// WatchSlots get data from different methods and store that data in prometheus. Metrics are
+// 1. Block Number and synching status
 func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 
 	ticker := time.NewTicker(slotPacerSchedule)
@@ -47,8 +49,7 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 	for {
 		<-ticker.C
 
-		log.Printf("here....")
-
+		// get skale node enpoint status
 		status, err := monitor.GetEndpointStatus(cfg)
 		if err != nil {
 			log.Printf("Error while getting endpoint status : %v", err)
@@ -60,6 +61,7 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 			if status.Data.Syncing {
 				i = 0
 				if strings.EqualFold(cfg.AlerterPreferences.BlockSyncAlerts, "yes") {
+					// send alert if the block synching is in process
 					telegramErr := alerter.SendTelegramAlert(fmt.Sprintf("Current block is in Syncing Process"), cfg)
 					if telegramErr != nil {
 						log.Printf("Error while sending block syncing status alert to telegram : %v", telegramErr)

@@ -9,7 +9,7 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
-// GetPublicIP returns the node public IP
+// GetBTRFSStatus returns BTRFS kernal information
 func GetBTRFSstatus(cfg *config.Config) (types.BTRFSstatus, error) {
 	log.Println("Getting BTRFS status ...")
 	ops := types.HTTPOptions{

@@ -43,10 +43,8 @@ type (
 
 	// Endpoints defines multiple API base-urls to fetch the data
 	Endpoints struct {
-		// RPCEndPoint is used to gather information about validator status,active stake, account balance, commission rate and etc.
+		// RPCEndPoint is used to gather information about validator sgx wallet status, block number, core status etc ...
 		SkaleNodeIP string `mapstructure:"skale_node_ip"`
-		// NetworkRPC is used to gather information about validator
-		NetworkRPC string `mapstructure:"network_rpc"`
 	}
 
 	// ValDetails stores the validator meta details

@@ -31,6 +31,7 @@ type metricsCollector struct {
 	btrfs       *prometheus.Desc
 }
 
+// NewMetricsCollector exports metricsCollector metrics to prometheus
 func NewMetricsCollector(cfg *config.Config) *metricsCollector {
 	return &metricsCollector{
 		config: cfg,
@@ -82,6 +83,13 @@ func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.btrfs
 }
 
+// Collect get data from methods and exports metrics to prometheus. Metrics are
+// 1. SGX status
+// 2. Public IP
+// 3. Core status or status of containers
+// 4. Schain Status
+// 5. Hardware Info
+// 6. BTRFS status
 func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	log.Println("Collecting exporter metrics...")
 	// get version

@@ -177,6 +177,7 @@ type (
 		Error interface{} `json:"error"`
 	}
 
+	// BTRFSstatus is a struct which holds btrfs kernal info
 	BTRFSstatus struct {
 		Data struct {
 			KernelModule bool `json:"kernel_module"`
