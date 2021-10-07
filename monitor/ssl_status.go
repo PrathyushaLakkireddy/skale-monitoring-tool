@@ -29,6 +29,6 @@ func GetSslStatus(cfg *config.Config) (types.SslStatus, error) {
 		log.Printf("Error: %v", err)
 		return result, err
 	}
-	return result, nil
 
+	return result, nil
 }

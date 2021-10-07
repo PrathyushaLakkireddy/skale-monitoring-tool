@@ -11,10 +11,11 @@ import (
 
 func GetWalletInfo(cfg *config.Config) (types.WalletInfo, error) {
 
-	cmd := exec.Command("skale", "wallet", "info", "-f", "json")
+	// execute skale wallet cli command
+	cmd := exec.Command("sudo", "skale", "wallet", "info", "-f", "json")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Printf("Error while runnig skale validator cli command %v", err)
+		log.Printf("Error while runnig sklale validator cli command %v", err)
 	}
 
 	var result types.WalletInfo
@@ -22,6 +23,6 @@ func GetWalletInfo(cfg *config.Config) (types.WalletInfo, error) {
 	if err != nil {
 		log.Printf("Error:%v", err)
 	}
-	return result, nil
 
+	return result, nil
 }
