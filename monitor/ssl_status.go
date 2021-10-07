@@ -9,12 +9,12 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
+// GetSslStatus returns ssl status - Key cert pair validity
 func GetSslStatus(cfg *config.Config) (types.SslStatus, error) {
-
 	log.Println("Getting SSL status...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/ssl",
-		Method:   http.MethodPost,
+		Method:   http.MethodGet,
 	}
 
 	var result types.SslStatus

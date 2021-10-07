@@ -15,7 +15,7 @@ func GetIMAstatus(cfg *config.Config) (types.IMAstatus, error) {
 
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/ima",
-		Method:   http.MethodPost,
+		Method:   http.MethodGet,
 	}
 
 	var result types.IMAstatus

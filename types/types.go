@@ -63,12 +63,6 @@ type (
 		Body       []byte
 	}
 
-	// Version struct which holds information of solana version
-	EthResult struct {
-		Jsonrpc string `json:"jsonrpc"`
-		Result  string `json:"result"`
-	}
-
 	// Syncing status of the node
 	Syncing struct {
 		Jsonrpc string `json:"jsonrpc"`
@@ -153,7 +147,7 @@ type (
 	// PublicIPResult is a struct which holds info of public IP
 	PublicIPResult struct { //TODO :: have to check
 		Data struct {
-			IP string `json:"ip"`
+			PublicIP string `json:"public_ip"`
 		} `json:"data"`
 	}
 
@@ -175,5 +169,37 @@ type (
 			} `json:"skale-chain-name"`
 		} `json:"data"`
 		Error interface{} `json:"error"`
+	}
+
+	// BTRFSstatus is a struct which holds btrfs kernal info
+	BTRFSstatus struct {
+		Data struct {
+			KernelModule bool `json:"kernel_module"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
+	}
+
+	NodeInfo struct {
+		Name           string `json:"name"`
+		IP             string `json:"ip"`
+		Publicip       string `json:"publicIP"`
+		Port           int    `json:"port"`
+		StartBlock     int    `json:"start_block"`
+		LastRewardDate int    `json:"last_reward_date"`
+		FinishTime     int    `json:"finish_time"`
+		Status         int    `json:"status"`
+		ValidatorID    int    `json:"validator_id"`
+		Publickey      string `json:"publicKey"`
+		DomainName     string `json:"domain_name"`
+		ID             int    `json:"id"`
+		Owner          string `json:"owner"`
+	}
+
+	WalletInfo struct {
+		Address         string `json:"address"`
+		EthBalanceWei   int64  `json:"eth_balance_wei"`
+		SkaleBalanceWei int    `json:"skale_balance_wei"`
+		EthBalance      string `json:"eth_balance"`
+		SkaleBalance    string `json:"skale_balance"`
 	}
 )

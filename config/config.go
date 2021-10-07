@@ -43,10 +43,8 @@ type (
 
 	// Endpoints defines multiple API base-urls to fetch the data
 	Endpoints struct {
-		// RPCEndPoint is used to gather information about validator status,active stake, account balance, commission rate and etc.
+		// RPCEndPoint is used to gather information about validator sgx wallet status, block number, core status etc ...
 		SkaleNodeIP string `mapstructure:"skale_node_ip"`
-		// NetworkRPC is used to gather information about validator
-		NetworkRPC string `mapstructure:"network_rpc"`
 	}
 
 	// ValDetails stores the validator meta details
@@ -91,6 +89,10 @@ type (
 		// EpochDiffAlerts which takes an option to enable/disable epoch difference alerts, on enable sends alerts if
 		// difference reaches or exceedes epoch difference threshold
 		EpochDiffAlerts string `mapstructure:"epoch_diff_alrets"`
+
+		BlockSyncAlerts string `mapstructure:"block_sync_alerts"`
+
+		NumPeersAlerts string `mapstructure:"num_peers_alerts"`
 	}
 
 	//  AlertingThreshold defines threshold condition for different alert-cases.
@@ -104,11 +106,12 @@ type (
 		// EpochDiffThreahold option is to send alerts when the difference b/w network and validator's
 		// epoch reaches or exceedes to epoch difference threshold
 		EpochDiffThreshold int64 `mapstructure:"epoch_diff_threshold"`
+		NumPeersThreshold  int64 `mapstructure:"num_peers_threshold"`
 	}
 
 	// Config defines all the configurations required for the app
 	Config struct {
-		Endpoints           Endpoints           `mapstructure:"rpc_and_lcd_endpoints"`
+		Endpoints           Endpoints           `mapstructure:"skale_endpoint"`
 		ValDetails          ValDetails          `mapstructure:"validator_details"`
 		EnableAlerts        EnableAlerts        `mapstructure:"enable_alerts"`
 		RegularStatusAlerts RegularStatusAlerts `mapstructure:"regular_status_alerts"`

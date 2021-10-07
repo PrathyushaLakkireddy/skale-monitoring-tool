@@ -14,7 +14,7 @@ func GetPublicIP(cfg *config.Config) (types.PublicIPResult, error) {
 	log.Println("Getting Public IP ...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/public-ip",
-		Method:   http.MethodPost,
+		Method:   http.MethodGet,
 	}
 
 	var result types.PublicIPResult
@@ -29,6 +29,5 @@ func GetPublicIP(cfg *config.Config) (types.PublicIPResult, error) {
 		log.Printf("Error: %v", err)
 		return result, err
 	}
-
 	return result, nil
 }

@@ -9,12 +9,12 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
-// GetSGXStatus returns the core status of skale network
+// GetSGXStatus returns SGX server info - connection status and SGX wallet version
 func GetSGXStatus(cfg *config.Config) (types.SGXStatus, error) {
 	log.Println("Getting SGX Status...")
 	ops := types.HTTPOptions{
 		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/sgx",
-		Method:   http.MethodPost,
+		Method:   http.MethodGet,
 	}
 
 	var result types.SGXStatus
@@ -29,6 +29,5 @@ func GetSGXStatus(cfg *config.Config) (types.SGXStatus, error) {
 		log.Printf("Error: %v", err)
 		return result, err
 	}
-
 	return result, nil
 }

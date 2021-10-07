@@ -9,16 +9,15 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
-// GetClientVersion returns the current solana versions running on the node
-func GetClientVersion(cfg *config.Config) (types.EthResult, error) {
-	log.Println("Getting Client Version...")
+// GetBTRFSStatus returns BTRFS kernal information
+func GetBTRFSstatus(cfg *config.Config) (types.BTRFSstatus, error) {
+	log.Println("Getting BTRFS status ...")
 	ops := types.HTTPOptions{
-		Endpoint: cfg.Endpoints.SkaleNodeIP,
-		Method:   http.MethodPost,
-		Body:     types.Payload{Jsonrpc: "2.0", Method: "web3_clientVersion", ID: 1},
+		Endpoint: cfg.Endpoints.SkaleNodeIP + "/status/btrfs",
+		Method:   http.MethodGet,
 	}
 
-	var result types.EthResult
+	var result types.BTRFSstatus
 	resp, err := HitHTTPTarget(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
@@ -30,8 +29,5 @@ func GetClientVersion(cfg *config.Config) (types.EthResult, error) {
 		log.Printf("Error: %v", err)
 		return result, err
 	}
-
-	log.Println("version..", result.Result)
-
 	return result, nil
 }
