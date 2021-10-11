@@ -75,7 +75,7 @@ type (
 	AlerterPreferences struct {
 		// DelegationAlerts which takes an option to disable/enable balance delegation alerts, on enable sends alert when current
 		// account balance has dropped below from previous account balance.
-		DelegationAlerts string `mapstructure:"delegation_alerts"`
+
 		// AccountBalanceChangeAlerts which takes an option to disable/enable Account balance change alerts, on enable sends alert
 		// when balance has dropped to balance threshold
 		AccountBalanceChangeAlerts string `mapstructure:"account_balance_change_alerts"`
@@ -93,20 +93,21 @@ type (
 		BlockSyncAlerts string `mapstructure:"block_sync_alerts"`
 
 		ContainerHealthAlerts string `mapstructure:"container_health_alerts"`
+
+		EthbalanceChangeAlerts string `mapstructure:"ethbalance_change_alerts"`
+
+		SklbalanceChangeAlerts string `mapstructure:"sklbalance_change_alerts"`
+
+		ETHDelegationAlerts string `mapstructure:"eth_delegation_alerts"`
+
+		SKLDelegationAlerts string `mapstructure:"skl_delegation_alerts"`
 	}
 
 	//  AlertingThreshold defines threshold condition for different alert-cases.
 	//`Alerter` will send alerts if the condition reaches the threshold
 	AlertingThreshold struct {
-		// BlockDiffThreshold is to send alerts when the difference b/w network and validator's
-		// block height reaches or exceedes to block difference threshold
-		BlockDiffThreshold int64 `mapstructure:"block_diff_threshold"`
-		// AccountBalThreshold is to send Alert when the validator balance has dropped below to this threshold
-		AccountBalThreshold float64 `mapstructure:"account_bal_threshold"`
-		// EpochDiffThreahold option is to send alerts when the difference b/w network and validator's
-		// epoch reaches or exceedes to epoch difference threshold
-		EpochDiffThreshold int64 `mapstructure:"epoch_diff_threshold"`
-		NumPeersThreshold  int64 `mapstructure:"num_peers_threshold"`
+		EthbalanceThreshold float64 `mapstructure:"ethbalance_change_threshold"`
+		SklbalanceThreshold float64 `mapstructure:"sklbalance_change_threshold"`
 	}
 
 	// Config defines all the configurations required for the app

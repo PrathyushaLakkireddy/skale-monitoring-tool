@@ -255,14 +255,9 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 		eth := float64(eb) / math.Pow(10, 18)
 		ch <- prometheus.MustNewConstMetric(c.ethBalance, prometheus.GaugeValue, eth, "skale ETH balance")
 
-		if wInfo.SkaleBalance != "" {
-			sb, err := strconv.ParseFloat(wInfo.SkaleBalance, 64)
-			if err != nil {
-				log.Printf("Error while converting skale balance to float : %v", err)
-			}
-			ch <- prometheus.MustNewConstMetric(c.skaleBalance, prometheus.GaugeValue, sb, "skale balance")
-
-		}
+		sb := wInfo.SkaleBalanceWei
+		skl := float64(sb) / math.Pow(10, 18)
+		ch <- prometheus.MustNewConstMetric(c.skaleBalance, prometheus.GaugeValue, skl, "skale balance")
 
 	}
 

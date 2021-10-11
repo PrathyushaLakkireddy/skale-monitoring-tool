@@ -46,6 +46,8 @@ func TelegramAlerting(cfg *config.Config) {
 			msgToSend = GetBlockNum(cfg)
 		} else if update.Message.Text == "/sgx_status" {
 			msgToSend = GetSGXstat(cfg)
+		} else if update.Message.Text == "/container_status" {
+			msgToSend = GetContainerHealth(cfg)
 		} else if update.Message.Text == "/stop" {
 			msgToSend = Stop()
 			if msgToSend != "" {
@@ -134,6 +136,28 @@ func GetSGXstat(cfg *config.Config) string {
 	}
 	s := res.Data.StatusName
 	msg = msg + fmt.Sprintf("Yout SGX server is %s\n", s)
+	return msg
+}
+
+func GetContainerHealth(cfg *config.Config) string {
+	var msg string
+
+	res, err := GetCoreStatus(cfg)
+	if err != nil {
+		log.Printf("Error while getting containers status : %v", err)
+	}
+	for i, container := range res.Data {
+		if res.Data[i].State.Running == true {
+			msg = msg + fmt.Sprintf("%s container is Running\n", container.Name)
+		} else if res.Data[i].State.Running == false {
+			msg = msg + fmt.Sprintf("%s container is not Running \n", container.Name)
+		} else if res.Data[i].State.Paused == true {
+			msg = msg + fmt.Sprintf("%s container is Paused \n", container.Name)
+		} else if res.Data[i].State.Dead == true {
+			msg = msg + fmt.Sprintf("%s container is Dead \n", container.Name)
+		}
+	}
+
 	return msg
 }
 

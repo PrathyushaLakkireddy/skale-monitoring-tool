@@ -202,4 +202,21 @@ type (
 		EthBalance      string `json:"eth_balance"`
 		SkaleBalance    string `json:"skale_balance"`
 	}
+
+	DBRes struct {
+		Status string `json:"status"`
+		Data   struct {
+			Resulttype string `json:"resultType"`
+			Result     []struct {
+				Metric struct {
+					Name            string `json:"__name__"`
+					Instance        string `json:"instance"`
+					Job             string `json:"job"`
+					SkaleEthBalance string `json:"skale_eth_balance"`
+					SkaleBalance    string `json:"skale_balance"`
+				} `json:"metric"`
+				Value []interface{} `json:"value"`
+			} `json:"result"`
+		} `json:"data"`
+	}
 )
