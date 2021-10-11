@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/config"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/exporter"
+	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/monitor"
 )
 
 func main() {
@@ -21,6 +23,13 @@ func main() {
 	collector := exporter.NewMetricsCollector(cfg)
 
 	go collector.WatchSlots(cfg)
+
+	go func() {
+		for {
+			monitor.TelegramAlerting(cfg)
+			time.Sleep(2 * time.Second)
+		}
+	}()
 
 	prometheus.MustRegister(collector)
 	http.Handle("/metrics", promhttp.Handler())

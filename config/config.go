@@ -92,7 +92,7 @@ type (
 
 		BlockSyncAlerts string `mapstructure:"block_sync_alerts"`
 
-		NumPeersAlerts string `mapstructure:"num_peers_alerts"`
+		ContainerHealthAlerts string `mapstructure:"container_health_alerts"`
 	}
 
 	//  AlertingThreshold defines threshold condition for different alert-cases.

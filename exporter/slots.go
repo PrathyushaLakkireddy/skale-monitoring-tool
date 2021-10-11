@@ -57,9 +57,8 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 			bn := float64(status.Data.BlockNumber)
 			blockNumber.Set(bn)
 
-			i := 1
-			if status.Data.Syncing {
-				i = 0
+			s := status.Data.Syncing
+			if s == true {
 				if strings.EqualFold(cfg.AlerterPreferences.BlockSyncAlerts, "yes") {
 					// send alert if the block synching is in process
 					telegramErr := alerter.SendTelegramAlert(fmt.Sprintf("Current block is in Syncing Process"), cfg)
@@ -68,11 +67,13 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 					}
 					emailErr := alerter.SendEmailAlert(fmt.Sprintf("Current block is in Syncing Process"), cfg)
 					if emailErr != nil {
-						log.Printf("Error while block syncing status alert to Email : %v", emailErr)
+						log.Printf("Error while sending block syncing status alert to Email : %v", emailErr)
 					}
 				}
+				syncing.Set(float64(1))
+			} else {
+				syncing.Set(float64(0))
 			}
-			syncing.Set(float64(i))
 		}
 	}
 }

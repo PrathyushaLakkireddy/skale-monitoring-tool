@@ -2,9 +2,12 @@ package monitor
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
+	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/alerter"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/config"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
@@ -30,5 +33,29 @@ func GetCoreStatus(cfg *config.Config) (types.StatusCore, error) {
 		return result, err
 	}
 
+	for _, container := range result.Data {
+		if strings.EqualFold(cfg.AlerterPreferences.ContainerHealthAlerts, "yes") {
+			if container.State.Running == false {
+				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Your %s container stopped running", container.Name), cfg)
+				if teleErr != nil {
+					log.Printf("Error while sending container health alert : %v", teleErr)
+				}
+			}
+			if container.State.Paused == true {
+				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Your %s container has paused", container.Name), cfg)
+				if teleErr != nil {
+					log.Printf("Error while sending container health alert : %v", teleErr)
+				}
+			}
+			if container.State.Dead == true {
+				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Your %s container state is dead", container.Name), cfg)
+				if teleErr != nil {
+					log.Printf("Error while sending container health alert : %v", teleErr)
+				}
+			}
+		}
+
+	}
 	return result, nil
+
 }
