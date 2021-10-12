@@ -1,8 +1,8 @@
 ### Configure the following variables in `config.toml`
 - **[skale_endpoint]**
- - *skale_node_ip*
+   - *skale_node_ip*
     
-    Skale node ip is used to gather information like hardware info, schains status, container health, block number etc.
+      Skale node ip is used to gather information like hardware info, schains status, container health, block number etc.
 
 - **[enable_alerts]**
 
