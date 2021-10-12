@@ -14,7 +14,7 @@ func TestGetHardwareInfo(t *testing.T) {
 	}
 	res, err := monitor.GetHardwareInfo(cfg)
 	if err != nil {
-		t.Error("Error while fetching Schain status")
+		t.Error("Error while fetching Hardware Info")
 	}
 	if &res == nil {
 		t.Error("Expected non empty result, but got empyt result: ", res)

@@ -90,6 +90,7 @@ func GetHelp() string {
 	return msg
 }
 
+// GetETHBal returns ETH balance
 func GetETHBal(cfg *config.Config) string {
 	var msg string
 
@@ -103,6 +104,7 @@ func GetETHBal(cfg *config.Config) string {
 	return msg
 }
 
+// GetSklBal returns skale balance
 func GetSklBal(cfg *config.Config) string {
 	var msg string
 
@@ -116,6 +118,7 @@ func GetSklBal(cfg *config.Config) string {
 	return msg
 }
 
+// GetBlockNum returns current block number
 func GetBlockNum(cfg *config.Config) string {
 	var msg string
 
@@ -127,6 +130,7 @@ func GetBlockNum(cfg *config.Config) string {
 	return msg
 }
 
+// GetSGXstat returns sgx status
 func GetSGXstat(cfg *config.Config) string {
 	var msg string
 
@@ -139,6 +143,7 @@ func GetSGXstat(cfg *config.Config) string {
 	return msg
 }
 
+// GetContainerHealth returns containers health status
 func GetContainerHealth(cfg *config.Config) string {
 	var msg string
 

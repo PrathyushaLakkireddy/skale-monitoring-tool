@@ -47,16 +47,6 @@ type (
 		SkaleNodeIP string `mapstructure:"skale_node_ip"`
 	}
 
-	// ValDetails stores the validator meta details
-	ValDetails struct {
-		// ValidatorName is the moniker of your validator which will be used to display in alerts messages
-		ValidatorName string `mapstructure:"validator_name"`
-		// PubKey of validator as base-58 encoded string
-		PubKey string `mapstructure:"pub_key"`
-		// VoteKey of validator as base-58 encoded string
-		VoteKey string `mapstructure:"vote_key"`
-	}
-
 	// EnableAlerts struct which holds options to enalbe/disable alerts
 	EnableAlerts struct {
 		// EnableTelegramAlerts which takes an option to enable/disable telegram alerts
@@ -73,33 +63,26 @@ type (
 
 	// AlerterPreferences which holds individual alert settings which takes an option to  enable/disable particular alert
 	AlerterPreferences struct {
-		// DelegationAlerts which takes an option to disable/enable balance delegation alerts, on enable sends alert when current
-		// account balance has dropped below from previous account balance.
-
-		// AccountBalanceChangeAlerts which takes an option to disable/enable Account balance change alerts, on enable sends alert
-		// when balance has dropped to balance threshold
-		AccountBalanceChangeAlerts string `mapstructure:"account_balance_change_alerts"`
-		// VotingPowerAlerts          string `mapstructure:"voting_power_alerts"`
-		// BlockDiffAlerts which takes an option to enable/disable block height difference alerts, on enable sends alert
-		// when difference meets or exceedes block difference threshold
-		BlockDiffAlerts string `mapstructure:"block_diff_alerts"`
 		// NodeHealthAlert which takes an option to  enable/disable node Health status alert, on enable sends alerts
 		NodeHealthAlert string `mapstructure:"node_health_alert"`
 		// NodeStatusAlert            string `mapstructure:"node_status_alert"`
-		// EpochDiffAlerts which takes an option to enable/disable epoch difference alerts, on enable sends alerts if
-		// difference reaches or exceedes epoch difference threshold
-		EpochDiffAlerts string `mapstructure:"epoch_diff_alrets"`
-
+		// BlockSyncAlerts which takes an option to disable/enable Block synching status alerts, on enable send alert
+		// when block is in synching process
 		BlockSyncAlerts string `mapstructure:"block_sync_alerts"`
-
+		// ContainerHealthAlerts which takes an option to disable/enable Container heath status alerts, on enable send alert
+		// when container stopped running or paused or dead
 		ContainerHealthAlerts string `mapstructure:"container_health_alerts"`
-
+		// EthbalanceChangeAlerts which takes an option to disable/enable Account balance change alerts, on enable sends alert
+		// when balance has dropped to eth balance threshold
 		EthbalanceChangeAlerts string `mapstructure:"ethbalance_change_alerts"`
-
+		// SklbalanceChangeAlerts which takes an option to disable/enable Account balance change alerts, on enable sends alert
+		// when balance has dropped to skale balance threshold
 		SklbalanceChangeAlerts string `mapstructure:"sklbalance_change_alerts"`
-
+		// ETHDelegationAlerts which takes an option to disable/enable Account balance delegation alerts, on enable sends alerts
+		// when ETH balance changes
 		ETHDelegationAlerts string `mapstructure:"eth_delegation_alerts"`
-
+		// SKLDelegationAlerts which takes an option to disable/enable Account balance delegation alerts, on enable sends alerts
+		// when SKALE balance changes
 		SKLDelegationAlerts string `mapstructure:"skl_delegation_alerts"`
 	}
 
@@ -113,7 +96,6 @@ type (
 	// Config defines all the configurations required for the app
 	Config struct {
 		Endpoints           Endpoints           `mapstructure:"skale_endpoint"`
-		ValDetails          ValDetails          `mapstructure:"validator_details"`
 		EnableAlerts        EnableAlerts        `mapstructure:"enable_alerts"`
 		RegularStatusAlerts RegularStatusAlerts `mapstructure:"regular_status_alerts"`
 		AlerterPreferences  AlerterPreferences  `mapstructure:"alerter_preferences"`

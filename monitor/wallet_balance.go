@@ -14,6 +14,7 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
+// GetWalletInfo returns wallet address ETH and skale balances
 func GetWalletInfo(cfg *config.Config) (types.WalletInfo, error) {
 	log.Println("Getting Wallet Info...")
 	cmd := exec.Command("skale", "wallet", "info", "-f", "json")
@@ -31,6 +32,7 @@ func GetWalletInfo(cfg *config.Config) (types.WalletInfo, error) {
 
 }
 
+// SendBalanceChangeAlert sends ETH and Skale balance change and delegation alerts
 func SendBalanceChangeAlert(ethBal string, sklBal string, cfg *config.Config) error {
 
 	eb, _ := strconv.ParseFloat(ethBal, 64)

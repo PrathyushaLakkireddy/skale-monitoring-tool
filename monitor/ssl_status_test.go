@@ -14,7 +14,7 @@ func TestGetSslStatus(t *testing.T) {
 	}
 	res, err := monitor.GetSslStatus(cfg)
 	if err != nil {
-		t.Error("Error while fetching Schain status")
+		t.Error("Error while fetching SSL status")
 	}
 	if &res == nil {
 		t.Error("Expected non empty result, but got empyt result: ", res)

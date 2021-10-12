@@ -179,6 +179,7 @@ type (
 		Error interface{} `json:"error"`
 	}
 
+	// NodeInfo is a struct which holds Skale Node info
 	NodeInfo struct {
 		Name           string `json:"name"`
 		IP             string `json:"ip"`
@@ -195,6 +196,7 @@ type (
 		Owner          string `json:"owner"`
 	}
 
+	// WalletInfo struct holds skale and eth balance
 	WalletInfo struct {
 		Address         string `json:"address"`
 		EthBalanceWei   int64  `json:"eth_balance_wei"`
@@ -203,6 +205,7 @@ type (
 		SkaleBalance    string `json:"skale_balance"`
 	}
 
+	// DBRes holds the ETH and skale balances which stored in DB
 	DBRes struct {
 		Status string `json:"status"`
 		Data   struct {

@@ -14,7 +14,7 @@ func TestGetBTRFSstatus(t *testing.T) {
 	}
 	res, err := monitor.GetBTRFSstatus(cfg)
 	if err != nil {
-		t.Error("Error while fetching Endpoint status")
+		t.Error("Error while fetching BTRFS kernal node status")
 	}
 	if &res == nil {
 		t.Error("Expected non empty result, but got empyt result: ", res)

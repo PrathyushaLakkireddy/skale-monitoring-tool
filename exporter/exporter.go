@@ -145,6 +145,8 @@ func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {
 // 4. Schain Status
 // 5. Hardware Info
 // 6. BTRFS status
+// 7. Skalr Node Info which includes node name, status, port, ip, public Ip etc..
+// 8. Skale Wallet Info which includes wallet addres, ETH balance, SKL balance
 func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	log.Println("Collecting exporter metrics...")
 	// get version
@@ -214,7 +216,7 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 
 	}
 
-	// get skale node name
+	// get skale node Info
 	n, err := monitor.GetNodeInfo(c.config)
 	if err != nil {
 		log.Printf("Error while getting node info : %v", err)

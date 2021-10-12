@@ -14,7 +14,7 @@ func TestGetIMAstatus(t *testing.T) {
 	}
 	res, err := monitor.GetIMAstatus(cfg)
 	if err != nil {
-		t.Error("Error while fetching Schain status")
+		t.Error("Error while fetching IMA status")
 	}
 	if &res == nil {
 		t.Error("Expected non empty result, but got empyt result: ", res)

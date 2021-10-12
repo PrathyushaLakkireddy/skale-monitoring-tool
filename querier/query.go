@@ -11,6 +11,7 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
+// GetETHbalanceFromDB returns ETH balance from prometheus
 func GetETHbalanceFromDB(cfg *config.Config) (string, error) {
 	var result types.DBRes
 	var bal string
@@ -35,6 +36,7 @@ func GetETHbalanceFromDB(cfg *config.Config) (string, error) {
 	return bal, nil
 }
 
+// GetSKLbalanceFromDB returns skale balance from prometheus
 func GetSKLbalanceFromDB(cfg *config.Config) (string, error) {
 	var result types.DBRes
 	var bal string

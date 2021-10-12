@@ -9,6 +9,10 @@ import (
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/types"
 )
 
+// GetNodeInfo returns Skale Node Info metrics which are
+// 1. Node Name
+// 2. IP and Public IP
+// 3. port and domain name
 func GetNodeInfo(cfg *config.Config) (types.NodeInfo, error) {
 	log.Println("Getting Node Info...")
 
