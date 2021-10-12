@@ -30,15 +30,15 @@
     
     - *sklbalance_change_alerts*
     
-     If you want to recieve alerts when the `SKALE` account balance has dropped below to configured threshold make it as **yes** otherwise **no**
+      If you want to recieve alerts when the `SKALE` account balance has dropped below to configured threshold make it as **yes** otherwise **no**
 
     - *eth_delegation_alerts*
 
-     Configure **yes** if you wish to recieve `ETH` balance change alerts otherwise make it **no**
+      Configure **yes** if you wish to recieve `ETH` balance change alerts otherwise make it **no**
 
     - *skl_delegation_alerts*
 
-      Configure **yes** if you wish to recieve `SKALE` balance change alerts otherwise make it **no**
+       Configure **yes** if you wish to recieve `SKALE` balance change alerts otherwise make it **no**
 
 - **[alerting_thresholds]**
 
