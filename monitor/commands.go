@@ -86,7 +86,7 @@ func TelegramAlerting(cfg *config.Config) {
 // GetHelp returns the msg to show for /help
 func GetHelp() string {
 	msg := "List of available commands\n /eth_balance - returns validator ETH balance\n /skale_balance - return validator SKL balance\n" +
-		"/block_number - returns current block number\n /sgx_status - returns sgx server status\n /stop - which panics the running code and also alerts will be stopped\n /list - list out the available commands"
+		"/block_number - returns current block number\n /sgx_status - returns sgx server status\n /container_status - returns status of the containers\n /stop - which panics the running code and also alerts will be stopped\n /list - list out the available commands"
 	return msg
 }
 

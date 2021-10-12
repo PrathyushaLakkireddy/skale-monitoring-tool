@@ -10,6 +10,7 @@ import (
 )
 
 func GetNodeInfo(cfg *config.Config) (types.NodeInfo, error) {
+	log.Println("Getting Node Info...")
 
 	cmd := exec.Command("skale", "node", "info", "-f", "json")
 	out, err := cmd.CombinedOutput()

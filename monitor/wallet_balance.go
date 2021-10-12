@@ -15,7 +15,7 @@ import (
 )
 
 func GetWalletInfo(cfg *config.Config) (types.WalletInfo, error) {
-
+	log.Println("Getting Wallet Info...")
 	cmd := exec.Command("skale", "wallet", "info", "-f", "json")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
