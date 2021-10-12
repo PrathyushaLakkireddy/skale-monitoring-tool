@@ -1,7 +1,6 @@
 ### A - Install Grafana for Ubuntu
 Download the latest .deb file and extract it by using the following commands
 
-
 ```sh
 $ cd $HOME
 $ sudo apt-get install -y adduser libfontconfig1
