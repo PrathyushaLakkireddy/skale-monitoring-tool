@@ -1,14 +1,11 @@
 package exporter
 
 import (
-	"fmt"
 	"log"
-	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/alerter"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/config"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/monitor"
 )
@@ -56,24 +53,6 @@ func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 		} else {
 			bn := float64(status.Data.BlockNumber)
 			blockNumber.Set(bn)
-
-			s := status.Data.Syncing
-			if s == true {
-				if strings.EqualFold(cfg.AlerterPreferences.BlockSyncAlerts, "yes") {
-					// send alert if the block synching is in process
-					telegramErr := alerter.SendTelegramAlert(fmt.Sprintf("Current block is in Syncing Process"), cfg)
-					if telegramErr != nil {
-						log.Printf("Error while sending block syncing status alert to telegram : %v", telegramErr)
-					}
-					emailErr := alerter.SendEmailAlert(fmt.Sprintf("Current block is in Syncing Process"), cfg)
-					if emailErr != nil {
-						log.Printf("Error while sending block syncing status alert to Email : %v", emailErr)
-					}
-				}
-				syncing.Set(float64(1))
-			} else {
-				syncing.Set(float64(0))
-			}
 		}
 	}
 }

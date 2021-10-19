@@ -76,7 +76,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 5,
+        "w": 7,
         "x": 0,
         "y": 0
       },
@@ -127,73 +127,14 @@
                 "value": null
               }
             ]
-          },
-          "unit": "string"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 5,
-        "y": 0
-      },
-      "id": 6,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {
-          "valueSize": 35
-        },
-        "textMode": "name"
-      },
-      "pluginVersion": "8.0.6",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "skale_public_ip",
-          "instant": false,
-          "interval": "",
-          "legendFormat": "{{public_ip}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Public IP",
-      "type": "stat"
-    },
-    {
-      "datasource": "${DS_SKALE}",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
           }
         },
         "overrides": []
       },
       "gridPos": {
         "h": 4,
-        "w": 5,
-        "x": 10,
+        "w": 6,
+        "x": 7,
         "y": 0
       },
       "id": 10,
@@ -249,8 +190,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 15,
+        "w": 5,
+        "x": 13,
         "y": 0
       },
       "id": 12,
@@ -276,6 +217,7 @@
         {
           "exemplar": true,
           "expr": "skale_sgx_status",
+          "instant": false,
           "interval": "",
           "legendFormat": "{{wallet_version}}",
           "refId": "A"
@@ -306,8 +248,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 5,
-        "x": 19,
+        "w": 6,
+        "x": 18,
         "y": 0
       },
       "id": 14,
@@ -353,7 +295,28 @@
             "displayMode": "auto",
             "filterable": false
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "dead": {
+                  "color": "dark-red",
+                  "index": 2,
+                  "text": "Dead"
+                },
+                "paused": {
+                  "color": "dark-orange",
+                  "index": 1,
+                  "text": "Paused"
+                },
+                "running": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "Running"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -373,14 +336,26 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 256
+                "value": 454
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 405
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 7,
+        "h": 13,
         "w": 24,
         "x": 0,
         "y": 4
@@ -388,7 +363,12 @@
       "id": 8,
       "options": {
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "image"
+          }
+        ]
       },
       "pluginVersion": "8.0.6",
       "targets": [
@@ -403,6 +383,32 @@
         }
       ],
       "title": "Status Core Info",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "status",
+                "name",
+                "image"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "image": "Image",
+              "name": "Name",
+              "status": "Status"
+            }
+          }
+        }
+      ],
       "type": "table"
     },
     {
@@ -443,6 +449,42 @@
                 "value": null
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Attached storage size"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 164
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "System release"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 185
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Uname version"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 326
+              }
+            ]
           }
         ]
       },
@@ -450,7 +492,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 17
       },
       "id": 4,
       "options": {
@@ -470,6 +512,40 @@
         }
       ],
       "title": "Hardware Info",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "attached_storage_size",
+                "cpu_physical_cores",
+                "cpu_total_cores",
+                "memory",
+                "swap",
+                "system_release",
+                "uname_version"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "attached_storage_size": "Attached storage size",
+              "cpu_physical_cores": "CPU physical cores",
+              "cpu_total_cores": "CPU total cores",
+              "memory": "Memory",
+              "swap": "Swap",
+              "system_release": "System release",
+              "uname_version": "Uname version"
+            }
+          }
+        }
+      ],
       "type": "table"
     }
   ],
@@ -487,5 +563,5 @@
   "timezone": "",
   "title": "Skale Validator Metrics",
   "uid": "h6c_CCH7z",
-  "version": 6
+  "version": 13
 }

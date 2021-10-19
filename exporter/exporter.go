@@ -12,6 +12,7 @@ import (
 
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/config"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/monitor"
+	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/utils"
 )
 
 const (
@@ -197,8 +198,11 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	if err != nil {
 		log.Printf("Error while getting hardware information : %v", err)
 	} else {
-		ch <- prometheus.MustNewConstMetric(c.hardware, prometheus.GaugeValue, -1, fmt.Sprintf("%d", h.Data.CPUTotalCores), fmt.Sprintf("%d", h.Data.CPUPhysicalCores), fmt.Sprintf("%d", h.Data.Memory),
-			fmt.Sprintf("%d", h.Data.Swap), h.Data.SystemRelease, h.Data.UnameVersion, fmt.Sprintf("%d", h.Data.AttachedStorageSize))
+		at := utils.LenReadable(int(h.Data.AttachedStorageSize), 2)
+		m := utils.LenReadable(int(h.Data.Memory), 2)
+		s := utils.LenReadable(int(h.Data.Swap), 2)
+		ch <- prometheus.MustNewConstMetric(c.hardware, prometheus.GaugeValue, -1, fmt.Sprintf("%d", h.Data.CPUTotalCores), fmt.Sprintf("%d", h.Data.CPUPhysicalCores), m,
+			s, h.Data.SystemRelease, h.Data.UnameVersion, at)
 	}
 
 	// get btrfs kernal module info
