@@ -60,3 +60,28 @@ func GetSKLbalanceFromDB(cfg *config.Config) (string, error) {
 
 	return bal, nil
 }
+
+// ConAlertStatusCountFromPrometheus returns the AlertCount for validator voting alert
+func ConAlertStatusCountFromPrometheus(cfg *config.Config) (string, error) {
+	var result types.DBRes
+	var count string
+	response, err := http.Get(fmt.Sprintf("%s/api/v1/query?query=skale_con_alertCount", cfg.Prometheus.PrometheusAddress))
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return count, err
+	}
+	responseData, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Println(err)
+	}
+	json.Unmarshal(responseData, &result)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return count, err
+	}
+	if len(result.Data.Result) > 0 {
+		count = result.Data.Result[0].Metric.SkaleConAlertCount
+	}
+
+	return count, nil
+}

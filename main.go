@@ -31,6 +31,13 @@ func main() {
 		}
 	}()
 
+	go func() {
+		for {
+			monitor.ContainerStatusAlert(cfg)
+			time.Sleep(5 * time.Minute)
+		}
+	}()
+
 	prometheus.MustRegister(collector)
 	http.Handle("/metrics", promhttp.Handler())
 	err = http.ListenAndServe(fmt.Sprintf("%s", cfg.Prometheus.ListenAddress), nil)

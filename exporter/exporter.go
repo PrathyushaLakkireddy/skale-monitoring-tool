@@ -10,8 +10,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
+	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/alerter"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/config"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/monitor"
+	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/querier"
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/utils"
 )
 
@@ -40,6 +42,7 @@ type metricsCollector struct {
 	walletAddress *prometheus.Desc
 	ethBalance    *prometheus.Desc
 	skaleBalance  *prometheus.Desc
+	conAlertCount *prometheus.Desc
 }
 
 // NewMetricsCollector exports metricsCollector metrics to prometheus
@@ -115,6 +118,10 @@ func NewMetricsCollector(cfg *config.Config) *metricsCollector {
 			"skale_balance",
 			"Skale balance",
 			[]string{"skale_balance"}, nil),
+		conAlertCount: prometheus.NewDesc(
+			"skale_con_alertCount",
+			"skale_con_alertCount",
+			[]string{"skale_con_alertCount"}, nil),
 	}
 }
 
@@ -172,12 +179,24 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 
 	// get core status to check docker images running status
 	cStatus, err := monitor.GetCoreStatus(c.config)
+	cl := len(cStatus.Data)
 	if err != nil {
 		log.Printf("Error while getting core status : %v", err)
 	} else {
+		var run int64
+		var pas int64
+		var dead int64
 		for _, v := range cStatus.Data {
+			if v.State.Running == true {
+				run = run + 1
+			} else if v.State.Paused == true {
+				pas = pas + 1
+			} else if v.State.Dead == true {
+				dead = dead + 1
+			}
 			ch <- prometheus.MustNewConstMetric(c.coreStatus, prometheus.GaugeValue, -1, v.Image, v.Name, v.State.Status)
 		}
+		c.AlertContainerStaus(run, pas, dead, cl, ch)
 	}
 
 	// get schains info
@@ -211,10 +230,10 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 		log.Printf("Error while getting btrfs status : %v", err)
 	} else {
 		if b.Data.KernelModule == true {
-			ks := "enabled"
+			ks := "Enabled"
 			ch <- prometheus.MustNewConstMetric(c.btrfs, prometheus.GaugeValue, -1, ks)
 		} else {
-			ks := "disabled"
+			ks := "Disabled"
 			ch <- prometheus.MustNewConstMetric(c.btrfs, prometheus.GaugeValue, -1, ks)
 		}
 
@@ -237,7 +256,7 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 		port := n.Port
 		ch <- prometheus.MustNewConstMetric(c.port, prometheus.GaugeValue, float64(port), "skale port")
 
-		s := n.Status // TODO : have to match code
+		s := n.Status
 		ch <- prometheus.MustNewConstMetric(c.status, prometheus.GaugeValue, float64(s), "Skale node status")
 
 		id := n.ID
@@ -247,6 +266,7 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 		if dn != "" {
 			ch <- prometheus.MustNewConstMetric(c.domainName, prometheus.GaugeValue, 1, dn)
 		}
+
 	}
 
 	// get skale wallet info
@@ -265,6 +285,57 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 		skl := float64(sb) / math.Pow(10, 18)
 		ch <- prometheus.MustNewConstMetric(c.skaleBalance, prometheus.GaugeValue, skl, "skale balance")
 
+	}
+
+}
+
+func (c *metricsCollector) AlertContainerStaus(run int64, pas int64, dead int64, cl int, ch chan<- prometheus.Metric) {
+	now := time.Now().UTC()
+	currentTime := now.Format(time.Kitchen)
+
+	var alertsArray []string
+
+	for _, value := range c.config.RegularStatusAlerts.AlertTimings {
+		t, _ := time.Parse(time.Kitchen, value)
+		alertTime := t.Format(time.Kitchen)
+
+		alertsArray = append(alertsArray, alertTime)
+	}
+	log.Printf("Current time : %v and alerts array : %v", currentTime, alertsArray)
+
+	var count float64 = 0
+
+	for _, conAlertTime := range alertsArray {
+		if currentTime == conAlertTime {
+			alreadySentAlert, _ := querier.ConAlertStatusCountFromPrometheus(c.config)
+			if alreadySentAlert == "false" {
+				if run == int64(cl) {
+					telegramErr := alerter.SendTelegramAlert(fmt.Sprintf("Container Status Alert: All containers are running, Total Containers are %v", cl), c.config)
+					if telegramErr != nil {
+						log.Printf("Error while sending regular status alert: %v", telegramErr)
+					}
+					emialErr := alerter.SendEmailAlert(fmt.Sprintf("Container Status Alert: All containers are running, Total Containers are %v", cl), c.config)
+					if emialErr != nil {
+						log.Printf("Error while sending regular status alert: %v", emialErr)
+					}
+				} else {
+					teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Container Status Alert: %v Containers are RUNNING\n %v Containers are PAUSED \n,%v Containers are STOPPED", run, pas, dead), c.config)
+					if teleErr != nil {
+						log.Printf("Error while sending regular status alert: %v", teleErr)
+					}
+					emailErr := alerter.SendEmailAlert(fmt.Sprintf("Container Status Alert: %v Containers are RUNNING\n %v Containers are PAUSED \n,%v Containers are STOPPED", run, pas, dead), c.config)
+					if emailErr != nil {
+						log.Printf("Error while sending regular status alert: %v", teleErr)
+					}
+
+				}
+				ch <- prometheus.MustNewConstMetric(c.conAlertCount, prometheus.GaugeValue, count, "true")
+				count = count + 1
+			} else {
+				ch <- prometheus.MustNewConstMetric(c.conAlertCount, prometheus.GaugeValue, count, "false")
+				return
+			}
+		}
 	}
 
 }
