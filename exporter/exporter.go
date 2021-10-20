@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -166,6 +167,18 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	if err != nil {
 		log.Printf("Error while fetching sgx status : %v", err)
 	} else {
+		if sgx.Data.StatusName != "CONNECTED" {
+			if strings.EqualFold(c.config.AlerterPreferences.SGXstatusAlerts, "yes") {
+				teleErr := alerter.SendEmailAlert(fmt.Sprintf("Compilance Alert: SGX wallet is not CONNECTED"), c.config)
+				if teleErr != nil {
+					log.Printf("Error while sending compilance error: %v", teleErr)
+				}
+				emailErr := alerter.SendEmailAlert(fmt.Sprintf("Compilance Alert: SGX wallet is not CONNECTED"), c.config)
+				if emailErr != nil {
+					log.Printf("Error while sending compilance error: %v", teleErr)
+				}
+			}
+		}
 		ch <- prometheus.MustNewConstMetric(c.sgxStatus, prometheus.GaugeValue, float64(sgx.Data.Status), sgx.Data.StatusName, sgx.Data.SgxWalletVersion)
 	}
 
@@ -234,6 +247,16 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 			ch <- prometheus.MustNewConstMetric(c.btrfs, prometheus.GaugeValue, -1, ks)
 		} else {
 			ks := "Disabled"
+			if strings.EqualFold(c.config.AlerterPreferences.BTRFSstatusAlerts, "yes") {
+				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Compilance Alert: BTRFS kernal module DISABLED"), c.config)
+				if teleErr != nil {
+					log.Printf("Error while sending Compilance Alert: %v", teleErr)
+				}
+				emailErr := alerter.SendEmailAlert(fmt.Sprintf("Compilance Alert: BTRFS kernal module DISABLED"), c.config)
+				if emailErr != nil {
+					log.Printf("Error while sending Compilance Alert: %v", teleErr)
+				}
+			}
 			ch <- prometheus.MustNewConstMetric(c.btrfs, prometheus.GaugeValue, -1, ks)
 		}
 

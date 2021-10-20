@@ -84,6 +84,10 @@ type (
 		// SKLDelegationAlerts which takes an option to disable/enable Account balance delegation alerts, on enable sends alerts
 		// when SKALE balance changes
 		SKLDelegationAlerts string `mapstructure:"skl_delegation_alerts"`
+
+		BTRFSstatusAlerts string `mapstructure:"btrfs_status_alerts"`
+
+		SGXstatusAlerts string `mapstructure:"sgx_status_alerts"`
 	}
 
 	//  AlertingThreshold defines threshold condition for different alert-cases.
