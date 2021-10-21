@@ -212,12 +212,13 @@ type (
 			Resulttype string `json:"resultType"`
 			Result     []struct {
 				Metric struct {
-					Name               string `json:"__name__"`
-					Instance           string `json:"instance"`
-					Job                string `json:"job"`
-					SkaleEthBalance    string `json:"skale_eth_balance"`
-					SkaleBalance       string `json:"skale_balance"`
-					SkaleConAlertCount string `json:"skale_con_alertCount"`
+					Name                string `json:"__name__"`
+					Instance            string `json:"instance"`
+					Job                 string `json:"job"`
+					SkaleEthBalance     string `json:"skale_eth_balance"`
+					SkaleBalance        string `json:"skale_balance"`
+					SkaleConAlertCount  string `json:"skale_con_alertCount"`
+					SkaleNodeAlertCount string `json:"skale_node_alertCount"`
 				} `json:"metric"`
 				Value []interface{} `json:"value"`
 			} `json:"result"`

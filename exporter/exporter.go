@@ -24,26 +24,27 @@ const (
 
 // metricsCollector respresents a set of skale metrics
 type metricsCollector struct {
-	config        *config.Config
-	mutex         *sync.Mutex
-	version       *prometheus.Desc
-	sgxStatus     *prometheus.Desc
-	publicIP      *prometheus.Desc
-	coreStatus    *prometheus.Desc
-	noOfschains   *prometheus.Desc
-	sChains       *prometheus.Desc
-	hardware      *prometheus.Desc
-	btrfs         *prometheus.Desc
-	nodeName      *prometheus.Desc
-	ip            *prometheus.Desc
-	port          *prometheus.Desc
-	status        *prometheus.Desc
-	nodeID        *prometheus.Desc
-	domainName    *prometheus.Desc
-	walletAddress *prometheus.Desc
-	ethBalance    *prometheus.Desc
-	skaleBalance  *prometheus.Desc
-	conAlertCount *prometheus.Desc
+	config         *config.Config
+	mutex          *sync.Mutex
+	version        *prometheus.Desc
+	sgxStatus      *prometheus.Desc
+	publicIP       *prometheus.Desc
+	coreStatus     *prometheus.Desc
+	noOfschains    *prometheus.Desc
+	sChains        *prometheus.Desc
+	hardware       *prometheus.Desc
+	btrfs          *prometheus.Desc
+	nodeName       *prometheus.Desc
+	ip             *prometheus.Desc
+	port           *prometheus.Desc
+	status         *prometheus.Desc
+	nodeID         *prometheus.Desc
+	domainName     *prometheus.Desc
+	walletAddress  *prometheus.Desc
+	ethBalance     *prometheus.Desc
+	skaleBalance   *prometheus.Desc
+	conAlertCount  *prometheus.Desc
+	nodeAlertCount *prometheus.Desc
 }
 
 // NewMetricsCollector exports metricsCollector metrics to prometheus
@@ -121,8 +122,12 @@ func NewMetricsCollector(cfg *config.Config) *metricsCollector {
 			[]string{"skale_balance"}, nil),
 		conAlertCount: prometheus.NewDesc(
 			"skale_con_alertCount",
-			"skale_con_alertCount",
+			"skale container status alertCount",
 			[]string{"skale_con_alertCount"}, nil),
+		nodeAlertCount: prometheus.NewDesc(
+			"skale_node_alertCount",
+			"skale node status alert count",
+			[]string{"skale_node_alertCount"}, nil),
 	}
 }
 
@@ -280,6 +285,7 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 			7: "Bad user error",
 			8: "Node state error",
 		}
+		c.SendNodeStatusAlert(s, st, ch)
 		for id, stat := range st {
 			if s == id {
 				ch <- prometheus.MustNewConstMetric(c.status, prometheus.GaugeValue, float64(s), stat)
@@ -363,6 +369,49 @@ func (c *metricsCollector) AlertContainerStaus(run int64, pas int64, dead int64,
 				return
 			}
 		}
+	}
+
+}
+
+func (c *metricsCollector) SendNodeStatusAlert(status int, stmap map[int]string, ch chan<- prometheus.Metric) {
+	now := time.Now().UTC()
+	currentTime := now.Format(time.Kitchen)
+
+	var alertsArray []string
+
+	for _, value := range c.config.RegularStatusAlerts.AlertTimings {
+		t, _ := time.Parse(time.Kitchen, value)
+		alertTime := t.Format(time.Kitchen)
+
+		alertsArray = append(alertsArray, alertTime)
+	}
+	log.Printf("Current time : %v and alerts array : %v", currentTime, alertsArray)
+
+	var count float64 = 0
+
+	for _, nodeAlertTime := range alertsArray {
+		if currentTime == nodeAlertTime {
+			alsentAlert, _ := querier.NodeAlertStatusCountFromPrometheus(c.config)
+			// if err != nil {
+			// 	log.Printf("Error while getting node status alert count from DB: %v", alsentAlert)
+			// }
+			if alsentAlert == "false" {
+				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Node Status: %s", stmap[status]), c.config)
+				if teleErr != nil {
+					log.Printf("Error while sending regular status alert of node status: %v", teleErr)
+				}
+				emailErr := alerter.SendEmailAlert(fmt.Sprintf("Node Status: %s", stmap[status]), c.config)
+				if emailErr != nil {
+					log.Printf("Error while sending regular status alert of node status: %v", teleErr)
+				}
+				ch <- prometheus.MustNewConstMetric(c.nodeAlertCount, prometheus.GaugeValue, count, "true")
+				count = count + 1
+			} else {
+				ch <- prometheus.MustNewConstMetric(c.nodeAlertCount, prometheus.GaugeValue, count, "false")
+				return
+			}
+		}
+
 	}
 
 }
