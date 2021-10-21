@@ -169,7 +169,7 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	} else {
 		if sgx.Data.StatusName != "CONNECTED" {
 			if strings.EqualFold(c.config.AlerterPreferences.SGXstatusAlerts, "yes") {
-				teleErr := alerter.SendEmailAlert(fmt.Sprintf("Compilance Alert: SGX wallet is not CONNECTED"), c.config)
+				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Compilance Alert: SGX wallet is not CONNECTED"), c.config)
 				if teleErr != nil {
 					log.Printf("Error while sending compilance error: %v", teleErr)
 				}
@@ -247,16 +247,6 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 			ch <- prometheus.MustNewConstMetric(c.btrfs, prometheus.GaugeValue, -1, ks)
 		} else {
 			ks := "Disabled"
-			if strings.EqualFold(c.config.AlerterPreferences.BTRFSstatusAlerts, "yes") {
-				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Compilance Alert: BTRFS kernal module DISABLED"), c.config)
-				if teleErr != nil {
-					log.Printf("Error while sending Compilance Alert: %v", teleErr)
-				}
-				emailErr := alerter.SendEmailAlert(fmt.Sprintf("Compilance Alert: BTRFS kernal module DISABLED"), c.config)
-				if emailErr != nil {
-					log.Printf("Error while sending Compilance Alert: %v", teleErr)
-				}
-			}
 			ch <- prometheus.MustNewConstMetric(c.btrfs, prometheus.GaugeValue, -1, ks)
 		}
 
@@ -280,7 +270,21 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(c.port, prometheus.GaugeValue, float64(port), "skale port")
 
 		s := n.Status
-		ch <- prometheus.MustNewConstMetric(c.status, prometheus.GaugeValue, float64(s), "Skale node status")
+		st := map[int]string{
+			0: "Everything is OK",
+			1: "General error exit code",
+			3: "Bad API response",
+			4: "Script execution error",
+			5: "Transaction error",
+			6: "Revert error",
+			7: "Bad user error",
+			8: "Node state error",
+		}
+		for id, stat := range st {
+			if s == id {
+				ch <- prometheus.MustNewConstMetric(c.status, prometheus.GaugeValue, float64(s), stat)
+			}
+		}
 
 		id := n.ID
 		ch <- prometheus.MustNewConstMetric(c.nodeID, prometheus.GaugeValue, float64(id), "skale node id")

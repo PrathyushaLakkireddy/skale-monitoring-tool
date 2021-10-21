@@ -27,6 +27,10 @@ func GetWalletInfo(cfg *config.Config) (types.WalletInfo, error) {
 	if err != nil {
 		log.Printf("Error:%v", err)
 	}
+	alertErr := SendBalanceChangeAlert(result.EthBalance, result.SkaleBalance, cfg)
+	if alertErr != nil {
+		log.Printf("Error while sending balance change alerts: %v", alertErr)
+	}
 	return result, nil
 
 }
@@ -77,6 +81,20 @@ func SendBalanceChangeAlert(ethBal string, sklBal string, cfg *config.Config) er
 			if err != nil {
 				log.Printf("Error while sending account balance change alert to Email : %v", err)
 				return err
+			}
+
+		}
+	}
+
+	if strings.EqualFold(cfg.AlerterPreferences.MinETHBalanceAlerts, "yes") {
+		if eb <= 1.5 {
+			teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Minimum ETH balance Alert: Your ETH balance is near to minimum threshold, current balance is %v", eb), cfg)
+			if teleErr != nil {
+				log.Printf("Error while sending minimum balance alert: %v", teleErr)
+			}
+			emailErr := alerter.SendEmailAlert(fmt.Sprintf("Minimum ETH balance Alert: Your ETH balance is near to minimum threshold, current balance is %v", eb), cfg)
+			if emailErr != nil {
+				log.Printf("Error while sending minimum balance alert: %v", teleErr)
 			}
 
 		}

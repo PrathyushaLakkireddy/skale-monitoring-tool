@@ -19,3 +19,5 @@ public IP : Returns Public IP of the node will get result from `/status/public-i
 
 schain status : Returns list of health checks for every sChain running on a given node, result got by calling `/status/schains` 
 
+
+

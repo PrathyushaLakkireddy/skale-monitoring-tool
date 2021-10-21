@@ -88,6 +88,8 @@ type (
 		BTRFSstatusAlerts string `mapstructure:"btrfs_status_alerts"`
 
 		SGXstatusAlerts string `mapstructure:"sgx_status_alerts"`
+
+		MinETHBalanceAlerts string `mapstructure:"min_ETHbalance_alerts"`
 	}
 
 	//  AlertingThreshold defines threshold condition for different alert-cases.

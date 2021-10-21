@@ -16,21 +16,23 @@ func ContainerStatusAlert(cfg *config.Config) error {
 	}
 	for _, container := range result.Data {
 		if strings.EqualFold(cfg.AlerterPreferences.ContainerHealthAlerts, "yes") {
-			if container.State.Running == false {
-				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("%s container stopped running", container.Name), cfg)
-				if teleErr != nil {
-					log.Printf("Error while sending container health alert : %v", teleErr)
-				}
-			}
-			if container.State.Paused == true {
+			if container.State.Running == false && container.State.Paused == true {
 				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("%s container has paused", container.Name), cfg)
 				if teleErr != nil {
 					log.Printf("Error while sending container health alert : %v", teleErr)
 				}
+				emailErr := alerter.SendEmailAlert(fmt.Sprintf("%s container has paused", container.Name), cfg)
+				if emailErr != nil {
+					log.Printf("Error while sending container health alert : %v", teleErr)
+				}
 			}
-			if container.State.Dead == true {
+			if container.State.Running == false && container.State.Dead == true {
 				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("%s container state is dead", container.Name), cfg)
 				if teleErr != nil {
+					log.Printf("Error while sending container health alert : %v", teleErr)
+				}
+				emailErr := alerter.SendEmailAlert(fmt.Sprintf("%s container state is dead", container.Name), cfg)
+				if emailErr != nil {
 					log.Printf("Error while sending container health alert : %v", teleErr)
 				}
 			}
