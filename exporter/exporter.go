@@ -291,6 +291,18 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 				ch <- prometheus.MustNewConstMetric(c.status, prometheus.GaugeValue, float64(s), stat)
 			}
 		}
+		if s != 0 {
+			if strings.EqualFold(c.config.AlerterPreferences.NodeHealthAlert, "yes") {
+				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Node Health Alert: %s", st[s]), c.config)
+				if teleErr != nil {
+					log.Printf("Error while sending node health alert: %v", teleErr)
+				}
+				emailErr := alerter.SendEmailAlert(fmt.Sprintf("Node Health Alert: %s", st[s]), c.config)
+				if emailErr != nil {
+					log.Printf("Error while sending node health alert: %v", teleErr)
+				}
+			}
+		}
 
 		id := n.ID
 		ch <- prometheus.MustNewConstMetric(c.nodeID, prometheus.GaugeValue, float64(id), "skale node id")

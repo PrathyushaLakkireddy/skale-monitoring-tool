@@ -24,17 +24,11 @@ var (
 		Name: "skale_block_number",
 		Help: "Skale block number",
 	})
-
-	alertCount = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "skale_alert_count",
-		Help: "Skale Alert count",
-	})
 )
 
 func init() {
 	prometheus.MustRegister(syncing)
 	prometheus.MustRegister(blockNumber)
-	prometheus.MustRegister(alertCount)
 }
 
 // WatchSlots get data from different methods and store that data in prometheus. Metrics are
