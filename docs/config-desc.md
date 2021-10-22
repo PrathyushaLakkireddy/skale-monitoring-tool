@@ -15,15 +15,11 @@
       Configure **yes** if you wish to get email alerts otherwise make it **no**.
 
 - **[alerter_preferences]**
-
-    - *block_sync_alerts*
-      
-      Configure **yes** if you wish to get block synh alerts i.e when the block is in synching state otherwise make it **no**
     
     - *container_health_alerts*
 
-      Configure **yes** if you wish to get container health and status alerts otherwise make it **no**
-    
+      Configure **yes** if you wish to get alerts when container state is *Paused* or *Dead* , otherwise configure it as **no**
+
     - *ethbalance_change_alerts*
 
       If you want to recieve alerts when the `ETH` account balance has dropped below to configured threshold make it as **yes** otherwise **no**
@@ -32,13 +28,17 @@
     
       If you want to recieve alerts when the `SKALE` account balance has dropped below to configured threshold make it as **yes** otherwise **no**
 
-    - *eth_delegation_alerts*
+    - *sgx_status_alerts*
+      
+      If you want to recieve alerts when SGX wallet is not connected to server make it as **yes** otherwise **no**
 
-      Configure **yes** if you wish to recieve `ETH` balance change alerts otherwise make it **no**
+    - *min_ETHbalance_alerts*
 
-    - *skl_delegation_alerts*
+      If you wish to recieve alerts when ETH wallet balance has dropped below or equal to 1.5ETH, make it as **yes** otherwise **no**
 
-       Configure **yes** if you wish to recieve `SKALE` balance change alerts otherwise make it **no**
+    - *node_health_alert*
+     
+      If you wish to recieve alerts when node health is not OK, then configured it as **yes** otherwise **no**
 
 - **[alerting_thresholds]**
 
@@ -49,6 +49,11 @@
    - *sklbalance_change_threshold*
      
       An integer value to recieve Skale balance change alerts, e.g. if your account balance has dropped to given threshold value you will receive alerts.
+    
+- **[regular_status_alerts]**
+  - *alert_timings*
+     
+     Array of timestamps for to get alerts about Container status and Node status. You will get alerts based on time which you configured.
 
 - **[telegram]**
   - *tg_chat_id*
