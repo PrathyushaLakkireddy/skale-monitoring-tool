@@ -13,6 +13,7 @@ const (
 	KB = 1000
 )
 
+// LenReadable returns bytes into readable format
 func LenReadable(length int, decimals int) (out string) {
 	var unit string
 	var i int

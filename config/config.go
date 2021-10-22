@@ -74,16 +74,20 @@ type (
 		// SklbalanceChangeAlerts which takes an option to disable/enable Account balance change alerts, on enable sends alert
 		// when balance has dropped to skale balance threshold
 		SklbalanceChangeAlerts string `mapstructure:"sklbalance_change_alerts"`
-
+		// SGXstatusAlerts which takes an option to disable/enable SGX wallet status alerts, on enable sends alert
+		// when SGX is not connected to server
 		SGXstatusAlerts string `mapstructure:"sgx_status_alerts"`
-
+		// MinETHBalanceAlerts which takes an option to disable/enable minimum ETH balance compilance alerts, on enable sends alert
+		// when ETH balance has dropped or equal to 1.5ETH
 		MinETHBalanceAlerts string `mapstructure:"min_ETHbalance_alerts"`
 	}
 
-	//  AlertingThreshold defines threshold condition for different alert-cases.
+	// AlertingThreshold defines threshold condition for different alert-cases.
 	//`Alerter` will send alerts if the condition reaches the threshold
 	AlertingThreshold struct {
+		// EthbalanceThreshold is to send alerts when the ETH balance has dropped below to this threshold
 		EthbalanceThreshold float64 `mapstructure:"ethbalance_change_threshold"`
+		// SklbalanceThreshold is to send alerts when the Skale balance has dropped below to this threshold
 		SklbalanceThreshold float64 `mapstructure:"sklbalance_change_threshold"`
 	}
 

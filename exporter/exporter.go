@@ -163,9 +163,6 @@ func (c *metricsCollector) Describe(ch chan<- *prometheus.Desc) {
 // 8. Skale Wallet Info which includes wallet addres, ETH balance, SKL balance
 func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 	log.Println("Collecting exporter metrics...")
-	// get version
-	// c.mutex.Lock()
-	// c.mutex.Unlock()
 
 	// get sgx status info
 	sgx, err := monitor.GetSGXStatus(c.config)
@@ -292,6 +289,7 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 			}
 		}
 		if s != 0 {
+			// send telegram and email alerts
 			if strings.EqualFold(c.config.AlerterPreferences.NodeHealthAlert, "yes") {
 				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Node Health Alert: %s", st[s]), c.config)
 				if teleErr != nil {
@@ -334,6 +332,7 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 
 }
 
+// AlertContainerStaus sends container status alerts at respective configured regular status alert timings
 func (c *metricsCollector) AlertContainerStaus(run int64, pas int64, dead int64, cl int, ch chan<- prometheus.Metric) {
 	now := time.Now().UTC()
 	currentTime := now.Format(time.Kitchen)
@@ -352,7 +351,10 @@ func (c *metricsCollector) AlertContainerStaus(run int64, pas int64, dead int64,
 
 	for _, conAlertTime := range alertsArray {
 		if currentTime == conAlertTime {
-			alreadySentAlert, _ := querier.ConAlertStatusCountFromPrometheus(c.config)
+			alreadySentAlert, err := querier.ConAlertStatusCountFromPrometheus(c.config)
+			if err != nil {
+				log.Printf("Error while getting container alert status count from DB : %v", err)
+			}
 			if alreadySentAlert == "false" {
 				if run == int64(cl) {
 					telegramErr := alerter.SendTelegramAlert(fmt.Sprintf("Container Status Alert: All containers are running, Total Containers are %v", cl), c.config)
@@ -385,6 +387,7 @@ func (c *metricsCollector) AlertContainerStaus(run int64, pas int64, dead int64,
 
 }
 
+// SendNodeStatusAlert sends node status alerts at respective configured regular status alert timings
 func (c *metricsCollector) SendNodeStatusAlert(status int, stmap map[int]string, ch chan<- prometheus.Metric) {
 	now := time.Now().UTC()
 	currentTime := now.Format(time.Kitchen)
@@ -403,10 +406,10 @@ func (c *metricsCollector) SendNodeStatusAlert(status int, stmap map[int]string,
 
 	for _, nodeAlertTime := range alertsArray {
 		if currentTime == nodeAlertTime {
-			alsentAlert, _ := querier.NodeAlertStatusCountFromPrometheus(c.config)
-			// if err != nil {
-			// 	log.Printf("Error while getting node status alert count from DB: %v", alsentAlert)
-			// }
+			alsentAlert, err := querier.NodeAlertStatusCountFromPrometheus(c.config)
+			if err != nil {
+				log.Printf("Error while getting node status alert count from DB: %v", alsentAlert)
+			}
 			if alsentAlert == "false" {
 				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Node Status: %s", stmap[status]), c.config)
 				if teleErr != nil {

@@ -32,7 +32,7 @@ func init() {
 }
 
 // WatchSlots get data from different methods and store that data in prometheus. Metrics are
-// 1. Block Number and synching status
+// Block Number and synching status
 func (c *metricsCollector) WatchSlots(cfg *config.Config) {
 
 	ticker := time.NewTicker(slotPacerSchedule)
