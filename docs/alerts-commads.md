@@ -6,8 +6,9 @@ Here are the list of Alerts
 - Alert when container health is not **Running**, **Paused** or **Dead**
 - Alert when ETH balance has dropped below **ethbalance_change_threshold** which is user configured in *config.toml*
 - Alert when Skale balance has dropped below **sklbalance_change_threshold** which is user configured in *config.toml*
-- Alert when ETH account balance changes
-- Alert when Skale account balance changes
+- Alert when ETH balance has dropped below or equal to 1.5ETH which is compilance alert to maintain minimum balance in wallet.
+- Alert when node health is not OK
+- Alert when SGX wallet is not connected 
 
 ## Telegram Commands
 These Commands can be used to get quick information about your Skale node

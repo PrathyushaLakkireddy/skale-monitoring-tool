@@ -65,10 +65,6 @@ type (
 	AlerterPreferences struct {
 		// NodeHealthAlert which takes an option to  enable/disable node Health status alert, on enable sends alerts
 		NodeHealthAlert string `mapstructure:"node_health_alert"`
-		// NodeStatusAlert            string `mapstructure:"node_status_alert"`
-		// BlockSyncAlerts which takes an option to disable/enable Block synching status alerts, on enable send alert
-		// when block is in synching process
-		BlockSyncAlerts string `mapstructure:"block_sync_alerts"`
 		// ContainerHealthAlerts which takes an option to disable/enable Container heath status alerts, on enable send alert
 		// when container stopped running or paused or dead
 		ContainerHealthAlerts string `mapstructure:"container_health_alerts"`
@@ -78,14 +74,6 @@ type (
 		// SklbalanceChangeAlerts which takes an option to disable/enable Account balance change alerts, on enable sends alert
 		// when balance has dropped to skale balance threshold
 		SklbalanceChangeAlerts string `mapstructure:"sklbalance_change_alerts"`
-		// ETHDelegationAlerts which takes an option to disable/enable Account balance delegation alerts, on enable sends alerts
-		// when ETH balance changes
-		ETHDelegationAlerts string `mapstructure:"eth_delegation_alerts"`
-		// SKLDelegationAlerts which takes an option to disable/enable Account balance delegation alerts, on enable sends alerts
-		// when SKALE balance changes
-		SKLDelegationAlerts string `mapstructure:"skl_delegation_alerts"`
-
-		BTRFSstatusAlerts string `mapstructure:"btrfs_status_alerts"`
 
 		SGXstatusAlerts string `mapstructure:"sgx_status_alerts"`
 
