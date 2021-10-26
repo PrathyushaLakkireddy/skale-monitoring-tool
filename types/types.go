@@ -1,6 +1,8 @@
 package types
 
 import (
+	"time"
+
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/PrathyushaLakkireddy/skale-monitoring-tool/config"
@@ -69,27 +71,27 @@ type (
 		Result  bool   `json:"result"`
 	}
 
-	// StatusCore is a struct which holds inoformation of image and status of it
-	StatusCore struct {
-		Data []struct {
-			Image string `json:"image"`
-			Name  string `json:"name"`
-			State struct {
-				Status     string `json:"Status"`
-				Running    bool   `json:"Running"`
-				Paused     bool   `json:"Paused"`
-				Restarting bool   `json:"Restarting"`
-				OOMKilled  bool   `json:"OOMKilled"`
-				Dead       bool   `json:"Dead"`
-				Pid        int    `json:"Pid"`
-				ExitCode   int    `json:"ExitCode"`
-				Error      string `json:"Error"`
-				StartedAt  string `json:"StartedAt"`
-				FinishedAt string `json:"FinishedAt"`
-			} `json:"state,omitempty"`
-		} `json:"data"`
-		Error interface{} `json:"error"`
-	}
+	// // StatusCore is a struct which holds inoformation of image and status of it
+	// StatusCore struct {
+	// 	Data []struct {
+	// 		Image string `json:"image"`
+	// 		Name  string `json:"name"`
+	// 		State struct {
+	// 			Status     string `json:"Status"`
+	// 			Running    bool   `json:"Running"`
+	// 			Paused     bool   `json:"Paused"`
+	// 			Restarting bool   `json:"Restarting"`
+	// 			OOMKilled  bool   `json:"OOMKilled"`
+	// 			Dead       bool   `json:"Dead"`
+	// 			Pid        int    `json:"Pid"`
+	// 			ExitCode   int    `json:"ExitCode"`
+	// 			Error      string `json:"Error"`
+	// 			StartedAt  string `json:"StartedAt"`
+	// 			FinishedAt string `json:"FinishedAt"`
+	// 		} `json:"state,omitempty"`
+	// 	} `json:"data"`
+	// 	Error interface{} `json:"error"`
+	// }
 
 	// SGXStatus which holds server info, connection status and SGX wallet version
 	SGXStatus struct {
@@ -223,5 +225,36 @@ type (
 				Value []interface{} `json:"value"`
 			} `json:"result"`
 		} `json:"data"`
+	}
+
+	StatusCore struct {
+		Data []struct {
+			Image string `json:"image"`
+			Name  string `json:"name"`
+			State struct {
+				Status     string    `json:"Status"`
+				Running    bool      `json:"Running"`
+				Paused     bool      `json:"Paused"`
+				Restarting bool      `json:"Restarting"`
+				Oomkilled  bool      `json:"OOMKilled"`
+				Dead       bool      `json:"Dead"`
+				Pid        int       `json:"Pid"`
+				Exitcode   int       `json:"ExitCode"`
+				Error      string    `json:"Error"`
+				Startedat  time.Time `json:"StartedAt"`
+				Finishedat time.Time `json:"FinishedAt"`
+				Health     struct {
+					Status        string `json:"Status"`
+					Failingstreak int    `json:"FailingStreak"`
+					Log           []struct {
+						Start    time.Time `json:"Start"`
+						End      time.Time `json:"End"`
+						Exitcode int       `json:"ExitCode"`
+						Output   string    `json:"Output"`
+					} `json:"Log"`
+				} `json:"Health"`
+			} `json:"state,omitempty"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
 	}
 )

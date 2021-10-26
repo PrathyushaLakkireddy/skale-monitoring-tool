@@ -152,15 +152,20 @@ func GetContainerHealth(cfg *config.Config) string {
 		log.Printf("Error while getting containers status : %v", err)
 	}
 	for i, container := range res.Data {
-		if res.Data[i].State.Running == true {
-			msg = msg + fmt.Sprintf("%s container is Running\n", container.Name)
-		} else if res.Data[i].State.Running == false {
-			msg = msg + fmt.Sprintf("%s container is not Running \n", container.Name)
-		} else if res.Data[i].State.Paused == true {
-			msg = msg + fmt.Sprintf("%s container is Paused \n", container.Name)
-		} else if res.Data[i].State.Dead == true {
-			msg = msg + fmt.Sprintf("%s container is Dead \n", container.Name)
+		if res.Data[i].State.Health.Status != "" {
+			msg = msg + fmt.Sprintf("%s container is %s\n", container.Name, res.Data[i].State.Health.Status)
+		} else {
+			if res.Data[i].State.Running == true {
+				msg = msg + fmt.Sprintf("%s container is Running\n", container.Name)
+			} else if res.Data[i].State.Running == false {
+				msg = msg + fmt.Sprintf("%s container is not Running \n", container.Name)
+			} else if res.Data[i].State.Paused == true {
+				msg = msg + fmt.Sprintf("%s container is Paused \n", container.Name)
+			} else if res.Data[i].State.Dead == true {
+				msg = msg + fmt.Sprintf("%s container is Dead \n", container.Name)
+			}
 		}
+
 	}
 
 	return msg

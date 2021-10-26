@@ -36,6 +36,16 @@ func ContainerStatusAlert(cfg *config.Config) error {
 					log.Printf("Error while sending container health alert : %v", teleErr)
 				}
 			}
+			if container.State.Running == false && container.State.Restarting == true {
+				teleErr := alerter.SendTelegramAlert(fmt.Sprintf("%s container is Restarting", container.Name), cfg)
+				if teleErr != nil {
+					log.Printf("Error while sending container health alert : %v", teleErr)
+				}
+				emailErr := alerter.SendEmailAlert(fmt.Sprintf("%s container is Restarting", container.Name), cfg)
+				if emailErr != nil {
+					log.Printf("Error while sending container health alert : %v", teleErr)
+				}
+			}
 		}
 	}
 	return nil

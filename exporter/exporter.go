@@ -201,17 +201,27 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 		var run int64
 		var pas int64
 		var dead int64
+		var health int64
 		for _, v := range cStatus.Data {
-			if v.State.Running == true {
-				run = run + 1
-			} else if v.State.Paused == true {
-				pas = pas + 1
-			} else if v.State.Dead == true {
-				dead = dead + 1
+			if v.State.Health.Status != "" {
+				if v.State.Health.Status == "healthy" {
+					health = health + 1
+				}
+			} else {
+				if v.State.Running == true {
+					run = run + 1
+				} else if v.State.Paused == true {
+					pas = pas + 1
+				} else if v.State.Dead == true {
+					dead = dead + 1
+				}
+			}
+			if v.State.Health.Status != "" {
+				ch <- prometheus.MustNewConstMetric(c.coreStatus, prometheus.GaugeValue, -1, v.Image, v.Name, v.State.Health.Status)
 			}
 			ch <- prometheus.MustNewConstMetric(c.coreStatus, prometheus.GaugeValue, -1, v.Image, v.Name, v.State.Status)
 		}
-		c.AlertContainerStaus(run, pas, dead, cl, ch)
+		c.AlertContainerStaus(run, pas, dead, health, cl, ch)
 	}
 
 	// get schains info
@@ -333,7 +343,7 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 }
 
 // AlertContainerStaus sends container status alerts at respective configured regular status alert timings
-func (c *metricsCollector) AlertContainerStaus(run int64, pas int64, dead int64, cl int, ch chan<- prometheus.Metric) {
+func (c *metricsCollector) AlertContainerStaus(run int64, pas int64, dead int64, health int64, cl int, ch chan<- prometheus.Metric) {
 	now := time.Now().UTC()
 	currentTime := now.Format(time.Kitchen)
 
@@ -356,26 +366,26 @@ func (c *metricsCollector) AlertContainerStaus(run int64, pas int64, dead int64,
 				log.Printf("Error while getting container alert status count from DB : %v", err)
 			}
 			if alreadySentAlert == "false" {
-				if run == int64(cl) {
-					telegramErr := alerter.SendTelegramAlert(fmt.Sprintf("Container Status Alert: All containers are running, Total Containers are %v", cl), c.config)
-					if telegramErr != nil {
-						log.Printf("Error while sending regular status alert: %v", telegramErr)
-					}
-					emialErr := alerter.SendEmailAlert(fmt.Sprintf("Container Status Alert: All containers are running, Total Containers are %v", cl), c.config)
-					if emialErr != nil {
-						log.Printf("Error while sending regular status alert: %v", emialErr)
-					}
-				} else {
-					teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Container Status Alert: %v Containers are RUNNING\n %v Containers are PAUSED \n,%v Containers are STOPPED", run, pas, dead), c.config)
+				if health != 0 {
+					teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Container Status Alert: \nRUNNING containers are: %v\n HEALTHY containers are: %v\n PAUSED containers are : %v\n STOPPED containers are: %v", run, health, pas, dead), c.config)
 					if teleErr != nil {
 						log.Printf("Error while sending regular status alert: %v", teleErr)
 					}
-					emailErr := alerter.SendEmailAlert(fmt.Sprintf("Container Status Alert: %v Containers are RUNNING\n %v Containers are PAUSED \n,%v Containers are STOPPED", run, pas, dead), c.config)
+					emailErr := alerter.SendEmailAlert(fmt.Sprintf("Container Status Alert: \nRUNNING containers are: %v\n HEALTHY containers are: %v\n PAUSED containers are : %v\n STOPPED containers are: %v", run, health, pas, dead), c.config)
 					if emailErr != nil {
 						log.Printf("Error while sending regular status alert: %v", teleErr)
 					}
-
+				} else {
+					teleErr := alerter.SendTelegramAlert(fmt.Sprintf("Container Status Alert: \n RUNNING containers are: %v\n PAUSED comtainers are: %v\n STOPPED containers are: %v", run, pas, dead), c.config)
+					if teleErr != nil {
+						log.Printf("Error while sending regular status alert: %v", teleErr)
+					}
+					emailErr := alerter.SendEmailAlert(fmt.Sprintf("Container Status Alert: \n RUNNING containers are: %v\n PAUSED comtainers are: %v\n STOPPED containers are: %v", run, pas, dead), c.config)
+					if emailErr != nil {
+						log.Printf("Error while sending regular status alert: %v", teleErr)
+					}
 				}
+
 				ch <- prometheus.MustNewConstMetric(c.conAlertCount, prometheus.GaugeValue, count, "true")
 				count = count + 1
 			} else {
