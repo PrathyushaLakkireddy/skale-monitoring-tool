@@ -218,8 +218,9 @@ func (c *metricsCollector) Collect(ch chan<- prometheus.Metric) {
 			}
 			if v.State.Health.Status != "" {
 				ch <- prometheus.MustNewConstMetric(c.coreStatus, prometheus.GaugeValue, -1, v.Image, v.Name, v.State.Health.Status)
+			} else {
+				ch <- prometheus.MustNewConstMetric(c.coreStatus, prometheus.GaugeValue, -1, v.Image, v.Name, v.State.Status)
 			}
-			ch <- prometheus.MustNewConstMetric(c.coreStatus, prometheus.GaugeValue, -1, v.Image, v.Name, v.State.Status)
 		}
 		c.AlertContainerStaus(run, pas, dead, health, cl, ch)
 	}
