@@ -16,7 +16,7 @@ import (
 // GetWalletInfo returns wallet address ETH and skale balances
 func GetWalletInfo(cfg *config.Config) (types.WalletInfo, error) {
 	log.Println("Getting Wallet Info...")
-	cmd := exec.Command("skale", "wallet", "info", "-f", "json")
+	cmd := exec.Command("sudo", "skale", "wallet", "info", "-f", "json")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Printf("Error while runnig skale validator cli command %v", err)

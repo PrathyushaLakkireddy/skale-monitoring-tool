@@ -16,7 +16,7 @@ import (
 func GetNodeInfo(cfg *config.Config) (types.NodeInfo, error) {
 	log.Println("Getting Node Info...")
 
-	cmd := exec.Command("skale", "node", "info", "-f", "json")
+	cmd := exec.Command("sudo", "skale", "node", "info", "-f", "json")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Printf("Error while runnig skale validator cli command %v", err)
