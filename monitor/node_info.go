@@ -2,7 +2,6 @@ package monitor
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"os/exec"
 	"strings"
@@ -25,7 +24,6 @@ func GetNodeInfo(cfg *config.Config) (types.NodeInfo, error) {
 	}
 	s := string(out)
 	s = strings.Replace(s, "'", "\"", -1)
-	fmt.Println("::::::::::::::::::::::::::", s)
 	var result types.NodeInfo
 	err = json.Unmarshal([]byte(s), &result)
 	if err != nil {
