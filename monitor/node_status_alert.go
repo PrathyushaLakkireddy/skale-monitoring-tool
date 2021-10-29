@@ -13,7 +13,7 @@ func NodeStatusAlert(cfg *config.Config) error {
 
 	info, err := GetNodeInfo(cfg)
 	if err != nil {
-		log.Println("Error while getting node info: %v", err)
+		log.Printf("Error while getting node info: %v", err)
 	}
 	status := info.Status
 	st := map[int]string{

@@ -34,8 +34,14 @@ func main() {
 	go func() {
 		for {
 			monitor.ContainerStatusAlert(cfg)
-			monitor.NodeStatusAlert(cfg)
 			time.Sleep(5 * time.Minute)
+		}
+	}()
+
+	go func() {
+		for {
+			monitor.NodeStatusAlert(cfg)
+			time.Sleep(1 * time.Minute)
 		}
 	}()
 
