@@ -1,0 +1,36 @@
+[skale_endpoint]
+skale_node_ip = "http://88.99.66.228:3009"
+
+[alerter_preferences]
+container_health_alerts = "yes"
+ethbalance_change_alerts = "yes"
+sklbalance_change_alerts  = "yes"
+sgx_status_alerts   = "yes"
+min_ETHbalance_alerts = "no"
+node_health_alert = "yes"
+
+[alerting_thresholds]
+ethbalance_change_threshold = 8
+sklbalance_change_threshold = 1
+
+[enable_alerts]
+enable_telegram_alerts = true
+enable_email_alerts = false
+
+[regular_status_alerts]
+alert_timings = ["06:06AM","02:30PM"]
+
+[telegram]
+tg_chat_id = 1569887674
+tg_bot_token = "1612782988:AAHgzThgjHm2D5kT2Ciaxt4pf2oivKEEzFc"
+
+
+[sendgrid]
+sendgrid_token = "SG.J4dl16RST9OM9Nc2Tbvh6A.L_FPSzlqvBesPPQP72hATEt5Hs8TUzo9Dl3ohG8Rk"
+receiver_email_address = "xyz@example.com"
+account_email = "xyz@domain.com"
+sendgrid_account_name = "xyz"
+
+[prometheus]
+listen_address = ":9009"
+prometheus_address = "http://localhost:5000"
